@@ -57,6 +57,23 @@ const TRANSLATIONS: Record<LangCode, {
   modalBioLabel: string;
   modalRestoreBtn: string;
   modalSaveBtn: string;
+  modalGenderLabel: string;
+  modalGenderMale: string;
+  modalGenderFemale: string;
+  modalAgeLabel: string;
+  modalAge10s: string;
+  modalAge20s: string;
+  modalAge30s: string;
+  modalAge40s: string;
+  modalMoodLabel: string;
+  modalMoodNormal: string;
+  modalMoodTeasing: string;
+  modalMoodLoving: string;
+  modalMoodSad: string;
+  userModalTitle: string;
+  userModalNameLabel: string;
+  userModalAvatarLabel: string;
+  userModalSaveBtn: string;
   presets: { label: string; prompt: string }[];
   bios: string[];
   teaseMessages: string[];
@@ -102,6 +119,23 @@ const TRANSLATIONS: Record<LangCode, {
     modalBioLabel: "친구의 한마디 (Bio)",
     modalRestoreBtn: "기본값 복원",
     modalSaveBtn: "설정 완료",
+    modalGenderLabel: "성별",
+    modalGenderMale: "남자 ♂️",
+    modalGenderFemale: "여자 ♀️",
+    modalAgeLabel: "나이대",
+    modalAge10s: "10대 (급식)",
+    modalAge20s: "20대 (학식/청춘)",
+    modalAge30s: "30대 (직딩)",
+    modalAge40s: "40대+ (행님/누님)",
+    modalMoodLabel: "친구의 기분 / 감정 상태 🎭",
+    modalMoodNormal: "일반 / 킹받음 🤪",
+    modalMoodTeasing: "약올림 / 장난기 😜",
+    modalMoodLoving: "사랑 / 애교 😍",
+    modalMoodSad: "슬픔 / 징징 😭",
+    userModalTitle: "내 프로필",
+    userModalNameLabel: "내 이름",
+    userModalAvatarLabel: "내 이모티콘",
+    userModalSaveBtn: "저장하기",
     presets: [
       { label: "🧦 양말 한 짝의 음모", prompt: "양말 한 짝 맨날 없어지는데 이거 왜 이럼?" },
       { label: "🍜 모기 참교육법", prompt: "방에 모기 새끼 한 마리 있는데 개킹받네. 참교육법 점" },
@@ -167,6 +201,23 @@ const TRANSLATIONS: Record<LangCode, {
     modalBioLabel: "Bro's Saying (Bio)",
     modalRestoreBtn: "Restore Defaults",
     modalSaveBtn: "Save Profile",
+    modalGenderLabel: "Gender",
+    modalGenderMale: "Male ♂️",
+    modalGenderFemale: "Female ♀️",
+    modalAgeLabel: "Age Group",
+    modalAge10s: "10s (Gen Alpha/Z)",
+    modalAge20s: "20s (College Bro)",
+    modalAge30s: "30s (Young Adult)",
+    modalAge40s: "40s+ (Boomsie)",
+    modalMoodLabel: "Friend's Mood / Emotion 🎭",
+    modalMoodNormal: "Normal / Crazy 🤪",
+    modalMoodTeasing: "Teasing / Prankster 😜",
+    modalMoodLoving: "Loving / Cute 😍",
+    modalMoodSad: "Sad / Crying 😭",
+    userModalTitle: "My Profile",
+    userModalNameLabel: "My Name",
+    userModalAvatarLabel: "My Emoji",
+    userModalSaveBtn: "Save",
     presets: [
       { label: "🧦 Sock Conspiracy", prompt: "Why do my socks always lose their pair?" },
       { label: "🦟 Mosquito Revenge", prompt: "There is one annoying mosquito in my room. Give me a 100% savage way to take revenge." },
@@ -232,6 +283,23 @@ const TRANSLATIONS: Record<LangCode, {
     modalBioLabel: "ダチの一言 (Bio)",
     modalRestoreBtn: "デフォルトに戻す",
     modalSaveBtn: "保存する",
+    modalGenderLabel: "性別",
+    modalGenderMale: "男性 ♂️",
+    modalGenderFemale: "女性 ♀️",
+    modalAgeLabel: "年代",
+    modalAge10s: "10代 (学生)",
+    modalAge20s: "20代 (若者)",
+    modalAge30s: "30代 (社畜)",
+    modalAge40s: "40代+ (おじ/おば)",
+    modalMoodLabel: "ダチの気分 / 感情 🎭",
+    modalMoodNormal: "通常 / ぶっ壊れ 🤪",
+    modalMoodTeasing: "煽り / いたずら 😜",
+    modalMoodLoving: "ラブ / 甘え 😍",
+    modalMoodSad: "泣き虫 / 悲しい 😭",
+    userModalTitle: "マイプロフィール",
+    userModalNameLabel: "自分の名前",
+    userModalAvatarLabel: "自分の絵文字",
+    userModalSaveBtn: "保存する",
     presets: [
       { label: "🧦 消える靴下の陰謀", prompt: "靴下がいつも片方だけ消えるんだけどこれ何で？" },
       { label: "🦟 蚊への復讐方法", prompt: "部屋にうざい蚊が1匹いる。絶対に許さない最強の復讐法を教えて" },
@@ -297,6 +365,23 @@ const TRANSLATIONS: Record<LangCode, {
     modalBioLabel: "死党个性签名 (Bio)",
     modalRestoreBtn: "恢复默认阿强",
     modalSaveBtn: "保存修改",
+    modalGenderLabel: "性别",
+    modalGenderMale: "男生 ♂️",
+    modalGenderFemale: "女生 ♀️",
+    modalAgeLabel: "年龄段",
+    modalAge10s: "10代 (初高中生)",
+    modalAge20s: "20代 (大学生/打工人)",
+    modalAge30s: "30代 (中年危机)",
+    modalAge40s: "40代+ (老大哥/老大姐)",
+    modalMoodLabel: "死党的情绪 / 气场 🎭",
+    modalMoodNormal: "普通 / 犯二 🤪",
+    modalMoodTeasing: "挑衅 / 犯贱 😜",
+    modalMoodLoving: "爱意 / 撒娇 😍",
+    modalMoodSad: "委屈 / 哭唧唧 😭",
+    userModalTitle: "我的档案",
+    userModalNameLabel: "我的名字",
+    userModalAvatarLabel: "我的表情",
+    userModalSaveBtn: "保存",
     presets: [
       { label: "🧦 消失的袜子阴谋", prompt: "为什么我的袜子总是莫名其妙只丢一只？" },
       { label: "🦟 蚊子大仇得报", prompt: "屋里有一只巨特么烦人的蚊子，给我出一个100%残忍的复仇绝招" },
@@ -366,6 +451,64 @@ function AdSenseBanner({ adBannerTitle, adBannerText }: { adBannerTitle: string;
           data-ad-format="horizontal"
           data-full-width-responsive="false"
         />
+      </div>
+    </div>
+  );
+}
+
+function KakaoAdFitBanner({ 
+  unitId = (import.meta as any).env?.VITE_KAKAO_ADFIT_UNIT_ID || "DAN-kakao-adfit-banner",
+  width = "320", 
+  height = "50" 
+}: { 
+  unitId?: string; 
+  width?: string; 
+  height?: string; 
+}) {
+  useEffect(() => {
+    // Dynamically inject the Kakao AdFit script if not already present
+    const scriptId = "kakao-adfit-script";
+    let script = document.getElementById(scriptId) as HTMLScriptElement;
+    if (!script) {
+      script = document.createElement("script");
+      script.id = scriptId;
+      script.type = "text/javascript";
+      script.src = "//t1.daumcdn.net/kas/static/ba.min.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
+
+  const isPlaceholder = unitId === "DAN-kakao-adfit-banner" || !unitId;
+
+  return (
+    <div className="mx-4 my-2.5 p-3 bg-slate-800/50 border border-slate-700/40 rounded-2xl flex flex-col items-center gap-1.5 text-xs text-slate-400">
+      <div className="flex items-center justify-between w-full px-1">
+        <div className="flex items-center gap-2">
+          <span className="bg-yellow-500 text-slate-950 text-[10px] px-1.5 py-0.5 rounded font-extrabold uppercase tracking-wider scale-90">
+            AdFit
+          </span>
+          <span className="font-semibold text-slate-200">카카오 애드핏 광고</span>
+        </div>
+        <span className="text-[10px] text-slate-500">{isPlaceholder ? "설정 필요 ⚙️" : "Adfit Active ⚡"}</span>
+      </div>
+      
+      {/* Real Kakao AdFit Tag Wrapper */}
+      <div className="w-full flex justify-center bg-slate-950/40 rounded-xl p-1 border border-slate-800/40 min-h-[50px] overflow-hidden">
+        {isPlaceholder ? (
+          <div className="text-[10px] text-slate-500 flex flex-col items-center justify-center p-2 text-center">
+            <p>카카오 애드핏 배너 영역 (320x50)</p>
+            <p className="text-[9px] text-slate-600 mt-0.5">환경변수 VITE_KAKAO_ADFIT_UNIT_ID를 설정하거나 코드를 수정하세요.</p>
+          </div>
+        ) : (
+          <ins 
+            className="kakao_ad_area" 
+            style={{ display: "none" }}
+            data-ad-width={width}
+            data-ad-height={height}
+            data-ad-unit={unitId}
+          />
+        )}
       </div>
     </div>
   );
@@ -506,8 +649,40 @@ export default function App() {
   const [friendName, setFriendName] = useState(t.defaultFriendName);
   const [friendStatus, setFriendStatus] = useState(t.defaultFriendStatus);
   const [friendBio, setFriendBio] = useState(t.bios[0]);
+  const [friendGender, setFriendGender] = useState<"male" | "female">("male");
+  const [friendAgeGroup, setFriendAgeGroup] = useState<"10s" | "20s" | "30s" | "40s">("20s");
+  const [friendMood, setFriendMood] = useState<"normal" | "teasing" | "loving" | "sad">("normal");
   const [closeness, setCloseness] = useState(85); // 0-100 Closeness meter
   const [brainCells, setBrainCells] = useState(1); // 1-100 Brain cell count
+
+  const [userName, setUserName] = useState("나");
+  const [userAvatar, setUserAvatar] = useState("🤔");
+  const [showUserProfileModal, setShowUserProfileModal] = useState(false);
+
+  const getAvatarEmoji = () => {
+    if (friendMood === "teasing") return "😜";
+    if (friendMood === "loving") return "😍";
+    if (friendMood === "sad") return "😭";
+
+    if (friendGender === "female") {
+      if (friendAgeGroup === "10s") return "👧";
+      if (friendAgeGroup === "20s") return "💅";
+      if (friendAgeGroup === "30s") return "💃";
+      return "👵";
+    } else {
+      if (friendAgeGroup === "10s") return "👦";
+      if (friendAgeGroup === "20s") return "🤪";
+      if (friendAgeGroup === "30s") return "😎";
+      return "🧔";
+    }
+  };
+
+  const getAgeText = () => {
+    if (friendAgeGroup === "10s") return t.modalAge10s;
+    if (friendAgeGroup === "20s") return t.modalAge20s;
+    if (friendAgeGroup === "30s") return t.modalAge30s;
+    return t.modalAge40s;
+  };
   
   const [isCopied, setIsCopied] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -606,7 +781,16 @@ export default function App() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: trimmed, history, lang }),
+        body: JSON.stringify({ 
+          message: trimmed, 
+          history, 
+          lang,
+          friendName,
+          friendGender,
+          friendAgeGroup,
+          friendMood,
+          userName
+        }),
       });
 
       if (!res.ok) {
@@ -740,13 +924,15 @@ export default function App() {
 
               {/* Avatar and Info */}
               <div className="flex items-center gap-3 relative z-10">
-                <div className="w-12 h-12 rounded-full bg-yellow-500/15 border-2 border-yellow-500 flex items-center justify-center text-2xl select-none">
-                  🤪
+                <div className="w-12 h-12 rounded-full bg-yellow-500/15 border-2 border-yellow-500 flex items-center justify-center text-2xl select-none animate-pulse">
+                  {getAvatarEmoji()}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 flex-wrap">
                     <span className="font-bold text-slate-200 truncate">{friendName}</span>
-                    <span className="text-[10px] bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded-full font-mono">{t.friendBioTitle}</span>
+                    <span className="text-[9px] bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 px-1.5 py-0.5 rounded-full font-semibold">
+                      {friendGender === "male" ? "♂️ " : "♀️ "}{getAgeText()}
+                    </span>
                   </div>
                   <p className="text-xs text-green-400 truncate mt-0.5">● {friendStatus}</p>
                 </div>
@@ -758,20 +944,29 @@ export default function App() {
               </div>
 
               {/* Profile Config Button */}
-              <div className="mt-4 flex gap-2">
+              <div className="mt-4 flex flex-col gap-2">
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => setShowProfileModal(true)}
+                    className="flex-1 py-1.5 px-3 bg-slate-700 hover:bg-slate-650 text-slate-200 hover:text-white rounded-xl text-xs font-medium transition flex items-center justify-center gap-1.5"
+                  >
+                    <User className="w-3.5 h-3.5" />
+                    {t.editProfileBtn}
+                  </button>
+                  <button 
+                    onClick={randomizeBio}
+                    className="p-1.5 bg-slate-700 hover:bg-slate-650 rounded-xl transition text-slate-300"
+                    title={t.randomizeBioBtn}
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                  </button>
+                </div>
                 <button 
-                  onClick={() => setShowProfileModal(true)}
-                  className="flex-1 py-1.5 px-3 bg-slate-700 hover:bg-slate-650 text-slate-200 hover:text-white rounded-xl text-xs font-medium transition flex items-center justify-center gap-1.5"
+                  onClick={() => setShowUserProfileModal(true)}
+                  className="w-full py-1.5 px-3 bg-slate-800 border border-slate-600 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl text-xs font-medium transition flex items-center justify-center gap-1.5"
                 >
-                  <User className="w-3.5 h-3.5" />
-                  {t.editProfileBtn}
-                </button>
-                <button 
-                  onClick={randomizeBio}
-                  className="p-1.5 bg-slate-700 hover:bg-slate-650 rounded-xl transition text-slate-300"
-                  title={t.randomizeBioBtn}
-                >
-                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span className="text-sm">{userAvatar}</span>
+                  {t.userModalTitle}
                 </button>
               </div>
             </div>
@@ -922,8 +1117,8 @@ export default function App() {
           {/* Mobile Profile & Title Bar */}
           <div className="p-3 bg-slate-800 border-b border-slate-700/60 flex items-center justify-between md:hidden">
             <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-full bg-yellow-500/10 border border-yellow-500 flex items-center justify-center text-lg">
-                🤪
+              <div className="w-9 h-9 rounded-full bg-yellow-500/10 border border-yellow-500 flex items-center justify-center text-lg select-none">
+                {getAvatarEmoji()}
               </div>
               <div>
                 <div className="flex items-center gap-1">
@@ -935,18 +1130,26 @@ export default function App() {
             </div>
             
             {/* Language switcher widget for Mobile View */}
-            <div className="flex gap-1 items-center bg-slate-900/40 p-1 rounded-lg border border-slate-700/40">
-              {LANG_DETAILS.map((l) => (
-                <button
-                  key={l.code}
-                  onClick={() => setLang(l.code)}
-                  className={`text-xs px-1.5 py-0.5 rounded transition ${
-                    lang === l.code ? "bg-yellow-500 text-slate-950 font-bold" : "text-slate-400"
-                  }`}
-                >
-                  {l.flag}
-                </button>
-              ))}
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => setShowUserProfileModal(true)}
+                className="w-8 h-8 rounded-full bg-slate-700 hover:bg-slate-600 border border-slate-600 flex items-center justify-center text-sm transition"
+              >
+                {userAvatar}
+              </button>
+              <div className="flex gap-1 items-center bg-slate-900/40 p-1 rounded-lg border border-slate-700/40">
+                {LANG_DETAILS.map((l) => (
+                  <button
+                    key={l.code}
+                    onClick={() => setLang(l.code)}
+                    className={`text-xs px-1.5 py-0.5 rounded transition ${
+                      lang === l.code ? "bg-yellow-500 text-slate-950 font-bold" : "text-slate-400"
+                    }`}
+                  >
+                    {l.flag}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -1000,18 +1203,26 @@ export default function App() {
                   key={msg.id} 
                   className={`flex items-start gap-2.5 ${isUser ? "flex-row-reverse" : "flex-row"}`}
                 >
-                  {/* Avatar for bot */}
-                  {!isUser && (
+                  {/* Avatar for bot/user */}
+                  {!isUser ? (
                     <div className="w-8 h-8 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center text-base shrink-0 select-none">
-                      🤪
+                      {getAvatarEmoji()}
+                    </div>
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-base shrink-0 select-none hover:bg-slate-700 cursor-pointer transition" onClick={() => setShowUserProfileModal(true)}>
+                      {userAvatar}
                     </div>
                   )}
 
                   <div className={`flex flex-col max-w-[75%] ${isUser ? "items-end" : "items-start"}`}>
-                    {/* Bot Name label */}
-                    {!isUser && (
+                    {/* Bot/User Name label */}
+                    {!isUser ? (
                       <span className="text-[10px] text-slate-400 font-medium mb-1 ml-1">
                         {friendName}
+                      </span>
+                    ) : (
+                      <span className="text-[10px] text-slate-400 font-medium mb-1 mr-1 cursor-pointer hover:text-slate-300" onClick={() => setShowUserProfileModal(true)}>
+                        {userName}
                       </span>
                     )}
 
@@ -1038,8 +1249,8 @@ export default function App() {
             {/* Typing indicator */}
             {isLoading && (
               <div className="flex items-start gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center text-base shrink-0 animate-spin">
-                  🧠
+                <div className="w-8 h-8 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center text-base shrink-0 select-none animate-bounce">
+                  {getAvatarEmoji()}
                 </div>
                 <div className="flex flex-col items-start max-w-[75%]">
                   <span className="text-[10px] text-slate-400 font-medium mb-1 ml-1">{friendName}</span>
@@ -1055,6 +1266,9 @@ export default function App() {
             <div ref={chatEndRef} />
           </div>
 
+          {/* KAKAO_ADFIT_BANNER */}
+          <KakaoAdFitBanner />
+
           {/* Preset Gimmick Suggestion Pills */}
           <div className="px-4 py-2 bg-slate-900/30 border-t border-slate-800/80 flex gap-2 overflow-x-auto scrollbar-none shrink-0">
             {t.presets.map((topic, idx) => (
@@ -1069,10 +1283,24 @@ export default function App() {
             ))}
           </div>
 
+          {/* Emoji Quick Picker */}
+          <div className="px-3 pt-2 pb-1 bg-slate-800 border-t border-slate-700/60 flex gap-2 overflow-x-auto scrollbar-none">
+            {["👍", "👎", "😂", "😡", "😭", "😍", "🖕", "❓", "🔥", "💯"].map(emoji => (
+               <button 
+                 key={emoji}
+                 type="button"
+                 onClick={() => setInput(prev => prev + emoji)}
+                 className="w-8 h-8 flex items-center justify-center text-lg bg-slate-900 rounded-lg border border-slate-700 hover:bg-slate-750 hover:border-yellow-500/50 transition shrink-0"
+               >
+                 {emoji}
+               </button>
+            ))}
+          </div>
+
           {/* Form input bar */}
           <form 
             onSubmit={handleFormSubmit} 
-            className="p-3 bg-slate-800 border-t border-slate-700/60 flex items-center gap-2"
+            className="p-3 bg-slate-800 flex items-center gap-2"
           >
             <input
               type="text"
@@ -1133,6 +1361,134 @@ export default function App() {
                 </div>
 
                 <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">{t.modalGenderLabel}</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setFriendGender("male")}
+                      className={`py-2 rounded-xl text-xs font-bold border transition ${
+                        friendGender === "male"
+                          ? "bg-yellow-500/10 border-yellow-500 text-yellow-400 shadow-sm"
+                          : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600"
+                      }`}
+                    >
+                      {t.modalGenderMale}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFriendGender("female")}
+                      className={`py-2 rounded-xl text-xs font-bold border transition ${
+                        friendGender === "female"
+                          ? "bg-yellow-500/10 border-yellow-500 text-yellow-400 shadow-sm"
+                          : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600"
+                      }`}
+                    >
+                      {t.modalGenderFemale}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">{t.modalAgeLabel}</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setFriendAgeGroup("10s")}
+                      className={`py-2 rounded-xl text-xs font-semibold border transition ${
+                        friendAgeGroup === "10s"
+                          ? "bg-yellow-500/10 border-yellow-500 text-yellow-400 shadow-sm"
+                          : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600"
+                      }`}
+                    >
+                      {t.modalAge10s}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFriendAgeGroup("20s")}
+                      className={`py-2 rounded-xl text-xs font-semibold border transition ${
+                        friendAgeGroup === "20s"
+                          ? "bg-yellow-500/10 border-yellow-500 text-yellow-400 shadow-sm"
+                          : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600"
+                      }`}
+                    >
+                      {t.modalAge20s}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFriendAgeGroup("30s")}
+                      className={`py-2 rounded-xl text-xs font-semibold border transition ${
+                        friendAgeGroup === "30s"
+                          ? "bg-yellow-500/10 border-yellow-500 text-yellow-400 shadow-sm"
+                          : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600"
+                      }`}
+                    >
+                      {t.modalAge30s}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFriendAgeGroup("40s")}
+                      className={`py-2 rounded-xl text-xs font-semibold border transition ${
+                        friendAgeGroup === "40s"
+                          ? "bg-yellow-500/10 border-yellow-500 text-yellow-400 shadow-sm"
+                          : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600"
+                      }`}
+                    >
+                      {t.modalAge40s}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">{t.modalMoodLabel}</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setFriendMood("normal")}
+                      className={`py-2 rounded-xl text-xs font-semibold border transition ${
+                        friendMood === "normal"
+                          ? "bg-yellow-500/10 border-yellow-500 text-yellow-400 shadow-sm"
+                          : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600"
+                      }`}
+                    >
+                      {t.modalMoodNormal}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFriendMood("teasing")}
+                      className={`py-2 rounded-xl text-xs font-semibold border transition ${
+                        friendMood === "teasing"
+                          ? "bg-yellow-500/10 border-yellow-500 text-yellow-400 shadow-sm"
+                          : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600"
+                      }`}
+                    >
+                      {t.modalMoodTeasing}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFriendMood("loving")}
+                      className={`py-2 rounded-xl text-xs font-semibold border transition ${
+                        friendMood === "loving"
+                          ? "bg-yellow-500/10 border-yellow-500 text-yellow-400 shadow-sm"
+                          : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600"
+                      }`}
+                    >
+                      {t.modalMoodLoving}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFriendMood("sad")}
+                      className={`py-2 rounded-xl text-xs font-semibold border transition ${
+                        friendMood === "sad"
+                          ? "bg-yellow-500/10 border-yellow-500 text-yellow-400 shadow-sm"
+                          : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600"
+                      }`}
+                    >
+                      {t.modalMoodSad}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
                   <label className="block text-xs font-semibold text-slate-400 mb-1">{t.modalBioLabel}</label>
                   <textarea 
                     value={friendBio} 
@@ -1150,6 +1506,9 @@ export default function App() {
                     setFriendName(t.defaultFriendName);
                     setFriendStatus(t.defaultFriendStatus);
                     setFriendBio(t.bios[0]);
+                    setFriendGender("male");
+                    setFriendAgeGroup("20s");
+                    setFriendMood("normal");
                   }}
                   className="flex-1 py-2 bg-slate-700 hover:bg-slate-650 text-slate-300 rounded-xl text-xs font-medium transition"
                 >
@@ -1160,6 +1519,67 @@ export default function App() {
                   className="flex-1 py-2 bg-yellow-500 hover:bg-yellow-400 text-slate-950 rounded-xl text-xs font-bold transition"
                 >
                   {t.modalSaveBtn}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* User Profile Modification Modal */}
+      <AnimatePresence>
+        {showUserProfileModal && (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-slate-800 border border-slate-700 rounded-3xl p-6 w-full max-w-sm shadow-2xl space-y-4"
+            >
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-700">
+                <User className="w-5 h-5 text-green-400" />
+                <h3 className="font-bold text-lg text-slate-100">{t.userModalTitle}</h3>
+              </div>
+
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">{t.userModalNameLabel}</label>
+                  <input 
+                    type="text" 
+                    value={userName} 
+                    onChange={(e) => setUserName(e.target.value.slice(0, 10))}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-green-500"
+                    placeholder="My Name"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">{t.userModalAvatarLabel}</label>
+                  <div className="grid grid-cols-5 gap-2">
+                    {["🤔", "😎", "🤓", "🤡", "👽", "💩", "👻", "🤖", "🐶", "🐱"].map(emoji => (
+                      <button
+                        key={emoji}
+                        type="button"
+                        onClick={() => setUserAvatar(emoji)}
+                        className={`w-10 h-10 flex items-center justify-center text-xl rounded-xl border transition ${
+                          userAvatar === emoji
+                            ? "bg-green-500/10 border-green-500 shadow-sm"
+                            : "bg-slate-900 border-slate-700 hover:border-slate-600"
+                        }`}
+                      >
+                        {emoji}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2 flex gap-2">
+                <button 
+                  onClick={() => setShowUserProfileModal(false)}
+                  className="flex-1 py-2 bg-green-500 hover:bg-green-400 text-slate-950 rounded-xl text-xs font-bold transition"
+                >
+                  {t.userModalSaveBtn}
                 </button>
               </div>
             </motion.div>
