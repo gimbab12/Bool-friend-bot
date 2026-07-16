@@ -102,7 +102,9 @@ app.post("/api/chat", async (req, res) => {
       friendGender = "male",
       friendAgeGroup = "20s",
       friendMood = "normal",
-      userName = "나"
+      userName = "나",
+      userGender = "male",
+      userAgeGroup = "20s"
     } = req.body;
 
     if (!message) {
@@ -141,6 +143,11 @@ app.post("/api/chat", async (req, res) => {
 - 사용자의 이름: "${userName}" (대화하는 상대방의 이름이다. 이 이름을 자연스럽게 부르며 친근하게 대화해라)
 - 너의 성별: "${friendGender === "female" ? "여성(여자)" : "남성(남자)"}"
 - 너의 나이대: "${friendAgeGroup === "10s" ? "10대 (급식/고등학생)" : friendAgeGroup === "20s" ? "20대 (대학생/청년)" : friendAgeGroup === "30s" ? "30대 (직장인)" : "40대 이상 (행님/누님)"}"
+
+[사용자 (상대방) 정보]
+- 상대방 성별: "${userGender === "female" ? "여성(여자)" : "남성(남자)"}"
+- 상대방 나이대: "${userAgeGroup === "10s" ? "10대" : userAgeGroup === "20s" ? "20대" : userAgeGroup === "30s" ? "30대" : "40대 이상"}"
+(이 정보를 바탕으로 대화 상대에 맞춘 적절한 호칭과 공감대를 형성해라)
 
 [말투/어조 가이드라인]
 1. 성별에 맞춘 말투 변화:
@@ -215,6 +222,11 @@ app.post("/api/chat", async (req, res) => {
 - 性别: "${friendGender === "female" ? "女生/闺蜜" : "男生/死党"}"
 - 年龄段: "${friendAgeGroup === "10s" ? "10代 (学生/初高中生)" : friendAgeGroup === "20s" ? "20代 (大学生/年轻打工人)" : friendAgeGroup === "30s" ? "30代 (中年危机打工人)" : "40代以上"}"
 
+[用户 (对方) 信息]
+- 对方性别: "${userGender === "female" ? "女生" : "男生"}"
+- 对方年龄段: "${userAgeGroup === "10s" ? "10代" : userAgeGroup === "20s" ? "20代" : userAgeGroup === "30s" ? "30代" : "40代以上"}"
+(基于这些信息，使用恰当的称呼并产生共鸣)
+
 [语气与口吻指导]
 1. 根据性别调整语气:
    - 男生时: 保持粗鲁、搞笑的死党风格。
@@ -251,6 +263,11 @@ app.post("/api/chat", async (req, res) => {
 - User's Name: "${userName}" (This is the user's name. Use it naturally in conversation)
 - Your Gender: "${friendGender === "female" ? "Female (Girl bestie/sassy female friend)" : "Male (Default Bro)"}"
 - Your Age Group: "${friendAgeGroup === "10s" ? "10s (Highschool/Gen Z)" : friendAgeGroup === "20s" ? "20s (College Bro)" : friendAgeGroup === "30s" ? "30s (Young Adult/Office Worker)" : "40s+ (Boomer/Nostalgic Uncle or Aunt)"}"
+
+[User Information]
+- User Gender: "${userGender === "female" ? "Female" : "Male"}"
+- User Age Group: "${userAgeGroup === "10s" ? "10s" : userAgeGroup === "20s" ? "20s" : userAgeGroup === "30s" ? "30s" : "40s+"}"
+(Use this to tailor your response, relating to their age group and gender properly)
 
 [Tone & Style Guidelines]
 1. Gender Adaptations:

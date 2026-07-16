@@ -135,6 +135,8 @@ const TRANSLATIONS: Record<LangCode, {
     userModalTitle: "내 프로필",
     userModalNameLabel: "내 이름",
     userModalAvatarLabel: "내 이모티콘",
+    userModalGenderLabel: "내 성별",
+    userModalAgeLabel: "내 나이대",
     userModalSaveBtn: "저장하기",
     presets: [
       { label: "🧦 양말 한 짝의 음모", prompt: "양말 한 짝 맨날 없어지는데 이거 왜 이럼?" },
@@ -217,6 +219,8 @@ const TRANSLATIONS: Record<LangCode, {
     userModalTitle: "My Profile",
     userModalNameLabel: "My Name",
     userModalAvatarLabel: "My Emoji",
+    userModalGenderLabel: "My Gender",
+    userModalAgeLabel: "My Age",
     userModalSaveBtn: "Save",
     presets: [
       { label: "🧦 Sock Conspiracy", prompt: "Why do my socks always lose their pair?" },
@@ -299,6 +303,8 @@ const TRANSLATIONS: Record<LangCode, {
     userModalTitle: "マイプロフィール",
     userModalNameLabel: "自分の名前",
     userModalAvatarLabel: "自分の絵文字",
+    userModalGenderLabel: "自分の性別",
+    userModalAgeLabel: "自分の年代",
     userModalSaveBtn: "保存する",
     presets: [
       { label: "🧦 消える靴下の陰謀", prompt: "靴下がいつも片方だけ消えるんだけどこれ何で？" },
@@ -381,6 +387,8 @@ const TRANSLATIONS: Record<LangCode, {
     userModalTitle: "我的档案",
     userModalNameLabel: "我的名字",
     userModalAvatarLabel: "我的表情",
+    userModalGenderLabel: "我的性别",
+    userModalAgeLabel: "我的年龄段",
     userModalSaveBtn: "保存",
     presets: [
       { label: "🧦 消失的袜子阴谋", prompt: "为什么我的袜子总是莫名其妙只丢一只？" },
@@ -456,15 +464,7 @@ function AdSenseBanner({ adBannerTitle, adBannerText }: { adBannerTitle: string;
   );
 }
 
-function KakaoAdFitBanner({ 
-  unitId = (import.meta as any).env?.VITE_KAKAO_ADFIT_UNIT_ID || "DAN-kakao-adfit-banner",
-  width = "320", 
-  height = "50" 
-}: { 
-  unitId?: string; 
-  width?: string; 
-  height?: string; 
-}) {
+function KakaoAdFitBanner() {
   useEffect(() => {
     // Dynamically inject the Kakao AdFit script if not already present
     const scriptId = "kakao-adfit-script";
@@ -473,13 +473,11 @@ function KakaoAdFitBanner({
       script = document.createElement("script");
       script.id = scriptId;
       script.type = "text/javascript";
-      script.src = "//t1.daumcdn.net/kas/static/ba.min.js";
+      script.src = "//t1.kakaocdn.net/kas/static/ba.min.js";
       script.async = true;
       document.body.appendChild(script);
     }
   }, []);
-
-  const isPlaceholder = unitId === "DAN-kakao-adfit-banner" || !unitId;
 
   return (
     <div className="mx-4 my-2.5 p-3 bg-slate-800/50 border border-slate-700/40 rounded-2xl flex flex-col items-center gap-1.5 text-xs text-slate-400">
@@ -490,25 +488,18 @@ function KakaoAdFitBanner({
           </span>
           <span className="font-semibold text-slate-200">카카오 애드핏 광고</span>
         </div>
-        <span className="text-[10px] text-slate-500">{isPlaceholder ? "설정 필요 ⚙️" : "Adfit Active ⚡"}</span>
+        <span className="text-[10px] text-slate-500">Adfit Active ⚡</span>
       </div>
       
       {/* Real Kakao AdFit Tag Wrapper */}
-      <div className="w-full flex justify-center bg-slate-950/40 rounded-xl p-1 border border-slate-800/40 min-h-[50px] overflow-hidden">
-        {isPlaceholder ? (
-          <div className="text-[10px] text-slate-500 flex flex-col items-center justify-center p-2 text-center">
-            <p>카카오 애드핏 배너 영역 (320x50)</p>
-            <p className="text-[9px] text-slate-600 mt-0.5">환경변수 VITE_KAKAO_ADFIT_UNIT_ID를 설정하거나 코드를 수정하세요.</p>
-          </div>
-        ) : (
-          <ins 
-            className="kakao_ad_area" 
-            style={{ display: "none" }}
-            data-ad-width={width}
-            data-ad-height={height}
-            data-ad-unit={unitId}
-          />
-        )}
+      <div className="w-full flex justify-center bg-slate-950/40 rounded-xl p-1 border border-slate-800/40 min-h-[250px] overflow-hidden">
+        <ins 
+          className="kakao_ad_area" 
+          style={{ display: "none" }}
+          data-ad-width="250"
+          data-ad-height="250"
+          data-ad-unit="DAN-eSm4iFhqWXLEsGNk"
+        />
       </div>
     </div>
   );
@@ -657,6 +648,8 @@ export default function App() {
 
   const [userName, setUserName] = useState("나");
   const [userAvatar, setUserAvatar] = useState("🤔");
+  const [userGender, setUserGender] = useState("male");
+  const [userAgeGroup, setUserAgeGroup] = useState("20s");
   const [showUserProfileModal, setShowUserProfileModal] = useState(false);
 
   const getAvatarEmoji = () => {
@@ -789,7 +782,9 @@ export default function App() {
           friendGender,
           friendAgeGroup,
           friendMood,
-          userName
+          userName,
+          userGender,
+          userAgeGroup
         }),
       });
 
@@ -1541,7 +1536,7 @@ export default function App() {
                 <h3 className="font-bold text-lg text-slate-100">{t.userModalTitle}</h3>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-4 h-[60vh] overflow-y-auto scrollbar-none pb-4 px-1">
                 <div>
                   <label className="block text-xs font-semibold text-slate-400 mb-1">{t.userModalNameLabel}</label>
                   <input 
@@ -1568,6 +1563,59 @@ export default function App() {
                         }`}
                       >
                         {emoji}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">{t.userModalGenderLabel}</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setUserGender("male")}
+                      className={`py-2 rounded-xl text-xs font-semibold border transition ${
+                        userGender === "male"
+                          ? "bg-green-500/10 border-green-500 text-green-400 shadow-sm"
+                          : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600"
+                      }`}
+                    >
+                      {t.modalGenderMale}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setUserGender("female")}
+                      className={`py-2 rounded-xl text-xs font-semibold border transition ${
+                        userGender === "female"
+                          ? "bg-green-500/10 border-green-500 text-green-400 shadow-sm"
+                          : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600"
+                      }`}
+                    >
+                      {t.modalGenderFemale}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">{t.userModalAgeLabel}</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { val: "10s", label: t.modalAge10s },
+                      { val: "20s", label: t.modalAge20s },
+                      { val: "30s", label: t.modalAge30s },
+                      { val: "40s", label: t.modalAge40s },
+                    ].map(age => (
+                      <button
+                        key={age.val}
+                        type="button"
+                        onClick={() => setUserAgeGroup(age.val)}
+                        className={`py-2 rounded-xl text-xs font-semibold border transition ${
+                          userAgeGroup === age.val
+                            ? "bg-green-500/10 border-green-500 text-green-400 shadow-sm"
+                            : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600"
+                        }`}
+                      >
+                        {age.label}
                       </button>
                     ))}
                   </div>
