@@ -1,0 +1,6 @@
+{
+  "name": "불알친구 AI",
+  "description": "20대 남성 찐친 반말 콘셉트의 황당무계한 헛소리 생성기",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

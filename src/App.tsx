@@ -1,0 +1,874 @@
+import React, { useState, useEffect, useRef } from "react";
+import { 
+  Send, 
+  Trash2, 
+  Smile, 
+  Volume2, 
+  Sparkles, 
+  User, 
+  HelpCircle, 
+  RotateCcw,
+  Copy,
+  Check,
+  Flame,
+  ShieldAlert,
+  Brain,
+  MessageCircle,
+  Languages,
+  Globe
+} from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+
+type LangCode = "ko" | "en" | "ja" | "zh";
+
+interface Message {
+  id: string;
+  role: "user" | "model";
+  content: string;
+  timestamp: string;
+}
+
+const TRANSLATIONS: Record<LangCode, {
+  title: string;
+  subtitle: string;
+  defaultFriendName: string;
+  defaultFriendStatus: string;
+  friendBioTitle: string;
+  editProfileBtn: string;
+  randomizeBioBtn: string;
+  closenessLabel: string;
+  brainCellsLabel: string;
+  teaseBtn: string;
+  backupBtn: string;
+  resetBtn: string;
+  helpTitle: string;
+  helpClose: string;
+  helpPoints: string[];
+  placeholderInput: string;
+  welcomeMessage: string;
+  errorMessage: string;
+  resetConfirm: string;
+  resetWelcome: string;
+  adBannerTitle: string;
+  adBannerText: string;
+  modalTitle: string;
+  modalNameLabel: string;
+  modalStatusLabel: string;
+  modalBioLabel: string;
+  modalRestoreBtn: string;
+  modalSaveBtn: string;
+  presets: { label: string; prompt: string }[];
+  bios: string[];
+  teaseMessages: string[];
+}> = {
+  ko: {
+    title: "불알친구 AI",
+    subtitle: "현실성 0% 뇌피셜의 황제",
+    defaultFriendName: "김덕배",
+    defaultFriendStatus: "피시방에서 삼양라면 흡입 중 🍜",
+    friendBioTitle: "20대 찐친",
+    editProfileBtn: "프로필 수정",
+    randomizeBioBtn: "한마디 랜덤 변경",
+    closenessLabel: "덕배와의 친밀도",
+    brainCellsLabel: "오늘 남은 뇌세포",
+    teaseBtn: "덕배한테 참교육(시비) 날리기 🖕",
+    backupBtn: "대화 백업",
+    resetBtn: "대화 리셋",
+    helpTitle: "덕배 사용 설명서",
+    helpClose: "닫기",
+    helpPoints: [
+      "이 새끼는 절대로 진지한 조언을 하지 않습니다.",
+      "어떤 단어나 고민을 던지든 현실성 0%의 우주 음모론과 정신 나간 헛소리로 답해줍니다.",
+      "참교육 날리기를 누르면 뇌 필터를 완전히 박살 낸 찐친 분노 톡을 보냅니다.",
+      "친구 이름이나 직업, 상태 메시지를 자유롭게 바꿔서 커스텀 찐친을 만들어보세요!"
+    ],
+    placeholderInput: "야 대가리에 든 생각 아무거나 적어봐 ㅋㅋㅋ",
+    welcomeMessage: "와 새끼 진짜 오랜만이네 ㅋㅋㅋ 어제 피시방 왜 안 왔냐? 오늘 무슨 황당한 일이 벌어졌길래 연락했냐? 뭐든 물어봐봐, 내가 지구 자전 축을 비틀어서라도 기상천외한 우주적 진실을 밝혀줄 테니까 ㅋㅋㅋ",
+    errorMessage: "아 미친, 인터넷 끊겼거나 내 뇌 회로에 과부하 걸림 ㅋㅋㅋ 다시 물어보든가 새로고침해봐 새끼야 ㅋㅋㅋ",
+    resetConfirm: "대화 내용 싹 다 밀어버릴 거냐?",
+    resetWelcome: "야, 왜 기억상실증 걸린 것처럼 리셋하냐? ㅋㅋㅋ 새로운 헛소리 세계관을 짜보자고! 빨리 아무 단어나 던져봐!",
+    adBannerTitle: "AD",
+    adBannerText: "구글 애드센스 광고 영역 (수익 극대화 존 💸)",
+    modalTitle: "내 불알친구 커스텀",
+    modalNameLabel: "친구 이름",
+    modalStatusLabel: "상태 메세지",
+    modalBioLabel: "친구의 한마디 (Bio)",
+    modalRestoreBtn: "기본값 복원",
+    modalSaveBtn: "설정 완료",
+    presets: [
+      { label: "🧦 양말 한 짝의 음모", prompt: "양말 한 짝 맨날 없어지는데 이거 왜 이럼?" },
+      { label: "🍜 모기 참교육법", prompt: "방에 모기 새끼 한 마리 있는데 개킹받네. 참교육법 점" },
+      { label: "💸 일확천금 뇌피셜", prompt: "돈 한 푼도 안 들이고 비트코인 100억 버는 법 알려줘" },
+      { label: "🥱 출근하기 싫다", prompt: "내일 출근(등교)하기 진짜 존나게 싫은데 꿀팁 없냐?" },
+      { label: "🍗 치킨 vs 피자", prompt: "오늘 저녁에 치킨 먹을까 피자 먹을까? 우주적 관점으로 골라줘" },
+      { label: "👽 외계인은 실존할까", prompt: "진짜 외계인 있냐? 있으면 왜 지구에 안 나타남?" },
+    ],
+    bios: [
+      "매주 로또 1등 당첨되면 뭐 할지 고해상도로 상상하는 중 💭",
+      "코인 7층에 완벽하게 패키징되어 감금당함 📈",
+      "라면 3개 국물까지 다 먹고 소화시키는 우주적 위장 보유자 🍜",
+      "일하지 않고 숨만 쉬고 돈 버는 '자연식 호흡법' 마스터 🧘",
+      "인생은 실전이다... 하지만 오늘은 피시방 실전이다 🎮",
+      "방바닥에 누워서 지구 중력 가속도 온몸으로 계측 중 🌍",
+    ],
+    teaseMessages: [
+      "아니 미친 새끼야 진짜 ㅋㅋㅋㅋㅋ",
+      "존나 어이없네 아 ㅋㅋㅋㅋ",
+      "뇌가 있냐? 존나 킹받네 ㅋㅋㅋ",
+      "아 시발 어제 술 덜 깼냐? ㅋㅋㅋㅋ",
+      "너 지금 나랑 장난하냐? ㅋㅋㅋㅋ",
+    ]
+  },
+  en: {
+    title: "SlangBro AI",
+    subtitle: "Lord of 0% Logical Conspiracy Theories",
+    defaultFriendName: "Jax",
+    defaultFriendStatus: "eating cold pizza in basement 🍕",
+    friendBioTitle: "20s Homie",
+    editProfileBtn: "Edit Profile",
+    randomizeBioBtn: "Randomize Bio",
+    closenessLabel: "Closeness Meter",
+    brainCellsLabel: "Active Braincells",
+    teaseBtn: "Savage Tease Jax 🖕",
+    backupBtn: "Backup Chat",
+    resetBtn: "Reset Chat",
+    helpTitle: "Bro Manual",
+    helpClose: "Close",
+    helpPoints: [
+      "This guy will NEVER give you logical or helpful advice.",
+      "Whatever you ask, he will make up a ridiculous 0%-reality cosmic conspiracy theory.",
+      "Clicking 'Savage Tease' sends a dynamic brainless insult to spark an argument.",
+      "Feel free to customize his name, status, and bio to match your real-life homie!"
+    ],
+    placeholderInput: "Yo, type whatever trash is on your mind lmao",
+    welcomeMessage: "Yo bro, where the hell were you yesterday? Lmao. Did you finally escape from your basement or what? Ask me anything, I'll bend the laws of thermodynamics to explain the absolute truth to you lmao",
+    errorMessage: "Damn, my brain got short-circuited or the server crashed lmao. Try again or refresh, you absolute clown",
+    resetConfirm: "Do you really want to wipe our beautiful memory?",
+    resetWelcome: "Dude, did you get amnesia or something? Lmao. Let's make up some brand new crazy theories! Throw a word at me, hurry up!",
+    adBannerTitle: "AD",
+    adBannerText: "Google AdSense Zone (Maximizing Bro Profits 💸)",
+    modalTitle: "Customize Your Bro",
+    modalNameLabel: "Bro Name",
+    modalStatusLabel: "Status Message",
+    modalBioLabel: "Bro's Saying (Bio)",
+    modalRestoreBtn: "Restore Defaults",
+    modalSaveBtn: "Save Profile",
+    presets: [
+      { label: "🧦 Sock Conspiracy", prompt: "Why do my socks always lose their pair?" },
+      { label: "🦟 Mosquito Revenge", prompt: "There is one annoying mosquito in my room. Give me a 100% savage way to take revenge." },
+      { label: "💸 Get Rich Secret", prompt: "Tell me how to make $10 billion in bitcoin with $0 investment immediately." },
+      { label: "🥱 Hate Work/School", prompt: "I literally hate working tomorrow. Give me a lifehack to escape." },
+      { label: "🍗 Pizza vs Chicken", prompt: "Should I eat chicken or pizza tonight? Decide with a cosmic multi-dimensional view." },
+      { label: "👽 Aliens", prompt: "Are aliens real? If so, why are they hiding from us?" },
+    ],
+    bios: [
+      "Vividly imagining what to buy when winning the powerball lottery every single day 💭",
+      "Stuck in the crypto top floor with zero chance of recovery 📈",
+      "Legendary stomach that can swallow 3 giant ramen cups with soup 🍜",
+      "Master of the 'no-work breathing technique' earning passive income 🧘",
+      "Life is hard, but gaming with the boys is harder 🎮",
+      "Lying on the floor measuring the Earth's gravity in real-time 🌍",
+    ],
+    teaseMessages: [
+      "Bro are you actually serious right now? Lmao",
+      "Wtf is wrong with you today lol",
+      "Do you even have a brain? Bro is tripping 💀",
+      "Damn, you still drunk from yesterday? Lmao",
+      "Are you trying to prank me or what, homie?",
+    ]
+  },
+  ja: {
+    title: "ダチ公 AI",
+    subtitle: "現実性0% デタラメ陰謀論の王様",
+    defaultFriendName: "ケンジ",
+    defaultFriendStatus: "ネカフェでカップ麺爆食い中 🍜",
+    friendBioTitle: "一生のツレ",
+    editProfileBtn: "プロフィール編集",
+    randomizeBioBtn: "一言をランダム変更",
+    closenessLabel: "ケンジとの親密度",
+    brainCellsLabel: "今日の残り脳細胞",
+    teaseBtn: "ケンジに煽りをぶちかます 🖕",
+    backupBtn: "バックアップ",
+    resetBtn: "チャット消去",
+    helpTitle: "ダチ公取扱説明書",
+    helpClose: "閉じる",
+    helpPoints: [
+      "この野郎は絶対に真面目なアドバイスをしません。",
+      "何を相談しても現実性0%の宇宙規模の陰謀論やバカげたホラ話で返してきます。",
+      "「煽りボタン」を押すと、脳のフィルターが完全にぶっ壊れたキレキレの煽りラインが飛びます。",
+      "名前や職業、一言を自由に変更して、お前だけの理想のダチを作ろう！"
+    ],
+    placeholderInput: "おい、頭に浮かんだクソみたいなこと何でも書けよｗｗｗ",
+    welcomeMessage: "うおー！お前めっちゃ久しぶりじゃんｗｗ昨日ネカフェになんで来なかったんだよ？今日はどんなバカげた用事があって俺に連絡したんだ？何でも聞いてくれ、地球の自転軸を捻じ曲げてでも宇宙の真実（デタラメ）を教えてやるからよおｗｗｗ",
+    errorMessage: "うわ、ネットが死んだか俺の脳みそがオーバーヒートしたわｗｗｗもう一回送るかリロードしろよお前ｗｗ",
+    resetConfirm: "思い出を全部消し去るつもりか？",
+    resetWelcome: "おいお前、記憶喪失にでもなったんか？ｗｗｗ新しいホラ話を作ろうぜ！早く適当な単語を投げてこいよ！",
+    adBannerTitle: "AD",
+    adBannerText: "Google AdSense 広告エリア（億万長者への道 💸）",
+    modalTitle: "ダチのカスタマイズ",
+    modalNameLabel: "ダチの名前",
+    modalStatusLabel: "ステータスメッセージ",
+    modalBioLabel: "ダチの一言 (Bio)",
+    modalRestoreBtn: "デフォルトに戻す",
+    modalSaveBtn: "保存する",
+    presets: [
+      { label: "🧦 消える靴下の陰謀", prompt: "靴下がいつも片方だけ消えるんだけどこれ何で？" },
+      { label: "🦟 蚊への復讐方法", prompt: "部屋にうざい蚊が1匹いる。絶対に許さない最強の復讐法を教えて" },
+      { label: "💸 一攫千金の裏ワザ", prompt: "元手0円で速攻ビットコインを100億円分稼ぐ方法教えて" },
+      { label: "🥱 学校/仕事に行きたくない", prompt: "明日ガチで会社（学校）行きたくないんだけど回避の極意ある？" },
+      { label: "🍗 チキン vs ピザ", prompt: "今日の夜飯、チキンとピザどっちがいい？宇宙の多次元的視点で選んで" },
+      { label: "👽 宇宙人は実在するのか", prompt: "ガチで宇宙人っているの？いるなら何で隠れてんの？" },
+    ],
+    bios: [
+      "宝くじで1等当たったら何を買うか、毎日超高画質で妄想中 💭",
+      "仮想通貨のてっぺんで綺麗にハメ殺されてる最中 📈",
+      "カップラーメン3個をスープまで完食する宇宙胃袋の持ち主 🍜",
+      "働かずに息するだけで金が湧き出る「自然式呼吸法」のマスター 🧘",
+      "人生は厳しい、だがネカフェの戦いはもっと厳しい 🎮",
+      "床にへばりついて地球の重力をリアルタイムで計測中 🌍",
+    ],
+    teaseMessages: [
+      "おいおいマジで言ってんのかお前ｗｗｗ",
+      "ちょっと何言ってるか分からないんだけどｗｗ",
+      "脳みそ詰まってんの？バカすぎて草ｗｗｗ",
+      "うわ、昨日の酒がまだ残ってんだろお前ｗｗ",
+      "俺をからかってんのかお前？ｗｗ",
+    ]
+  },
+  zh: {
+    title: "沙雕死党 AI",
+    subtitle: "胡编乱造、宇宙级扯淡带师",
+    defaultFriendName: "阿强",
+    defaultFriendStatus: "在网吧疯狂吸吮三鲜面 🍜",
+    friendBioTitle: "沙雕损友",
+    editProfileBtn: "修改死党属性",
+    randomizeBioBtn: "随机更换签名",
+    closenessLabel: "与阿强的基情指数",
+    brainCellsLabel: "今日残存脑细胞",
+    teaseBtn: "对阿强发起挑衅(互怼) 🖕",
+    backupBtn: "备份聊天记录",
+    resetBtn: "清空记忆",
+    helpTitle: "阿强使用手册",
+    helpClose: "关闭",
+    helpPoints: [
+      "这丫绝对不会给你任何有建设性的正常建议。",
+      "无论你问什么，他都会编造100%现实度为0的宇宙阴谋论或扯淡故事来洗脑你。",
+      "点击“发起挑衅”会发送一句毫无底线的损友吐槽，瞬间开启互怼模式。",
+      "随时可以自定义他的名字、状态和签名，定制一个专属你现实中死党的沙雕人格！"
+    ],
+    placeholderInput: "丫的，脑子里有什么废料赶紧吐出来 ㅋㅋㅋ",
+    welcomeMessage: "卧槽，你小子还知道联系我啊？ ㅋㅋㅋ 昨天网吧开黑你特么放我鸽子！今天遇到啥倒霉事了赶紧跟哥们儿说说，就算让我把地球自转轴掰弯，也得给你扯出一套宇宙真理来，笑死！ ㅋㅋㅋ",
+    errorMessage: "卧槽，网络炸了还是我脑子烧了 ㅋㅋㅋ 重试一下或者刷新网页，你这个大沙雕！",
+    resetConfirm: "要把我们的沙雕回忆全部格式化吗？",
+    resetWelcome: "我擦，你小子怎么跟失忆了一样？ ㅋㅋㅋ 赶紧给哥们来点新花样！随便扔个词，快点！",
+    adBannerTitle: "AD",
+    adBannerText: "谷歌 AdSense 广告位 (损友致富大平层 💸)",
+    modalTitle: "定制你的沙雕死党",
+    modalNameLabel: "死党名字",
+    modalStatusLabel: "当前状态",
+    modalBioLabel: "死党个性签名 (Bio)",
+    modalRestoreBtn: "恢复默认阿强",
+    modalSaveBtn: "保存修改",
+    presets: [
+      { label: "🧦 消失的袜子阴谋", prompt: "为什么我的袜子总是莫名其妙只丢一只？" },
+      { label: "🦟 蚊子大仇得报", prompt: "屋里有一只巨特么烦人的蚊子，给我出一个100%残忍的复仇绝招" },
+      { label: "💸 零元暴富秘籍", prompt: "教我怎么在1分钱不花的情况下快速获得100亿比特币" },
+      { label: "🥱 纯粹不想上班/上学", prompt: "明天真特么不想上班，给我来个不用请假就能逃避的骚操作" },
+      { label: "🍗 炸鸡还是披萨", prompt: "今晚吃炸鸡还是披萨？请从宇宙多维空间宏观角度帮我决定" },
+      { label: "👽 外星人实锤", prompt: "世界上真的有外星人吗？如果有，他们为什么天天躲着我们？" },
+    ],
+    bios: [
+      "每天高画质、全景3D幻想中彩票一等奖之后的奢华生活 💭",
+      "在加密货币7层天台吹冷风，已经彻底冻僵 📈",
+      "宇宙级无底洞胃，能连汤带面干掉3桶超大号泡面 🍜",
+      "掌握了“不干活光呼吸也能赚钱”的终极空气理财大法 🧘",
+      "生活很艰难，但和傻逼开黑更艰难 🎮",
+      "天天瘫在地上测算地球重力对肥肉的引力常数 🌍",
+    ],
+    teaseMessages: [
+      "卧槽，你小子今天没吃药吧？ ㅋㅋㅋ",
+      "真特么离谱，你脑子进水了？ ㅋㅋㅋ",
+      "兄弟你还有脑细胞吗？笑死我了 ㅋㅋㅋ",
+      "怎么着，昨晚假酒喝多了还没醒？ ㅋㅋㅋ",
+      "你丫是不是找抽，敢跟哥们儿逗乐子？ ㅋㅋㅋ",
+    ]
+  }
+};
+
+const LANG_DETAILS = [
+  { code: "ko" as LangCode, flag: "🇰🇷", label: "한국어" },
+  { code: "en" as LangCode, flag: "🇺🇸", label: "English" },
+  { code: "ja" as LangCode, flag: "🇯🇵", label: "日本語" },
+  { code: "zh" as LangCode, flag: "🇨🇳", label: "简体中文" },
+];
+
+export default function App() {
+  const [lang, setLang] = useState<LangCode>("ko");
+  const t = TRANSLATIONS[lang];
+
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "welcome",
+      role: "model",
+      content: t.welcomeMessage,
+      timestamp: new Date().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" }),
+    },
+  ]);
+  
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Customization states
+  const [friendName, setFriendName] = useState(t.defaultFriendName);
+  const [friendStatus, setFriendStatus] = useState(t.defaultFriendStatus);
+  const [friendBio, setFriendBio] = useState(t.bios[0]);
+  const [closeness, setCloseness] = useState(85); // 0-100 Closeness meter
+  const [brainCells, setBrainCells] = useState(1); // 1-100 Brain cell count
+  
+  const [isCopied, setIsCopied] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto scroll to bottom
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isLoading]);
+
+  // Synchronize dynamic friend info and first messages when language changes
+  useEffect(() => {
+    setFriendName(t.defaultFriendName);
+    setFriendStatus(t.defaultFriendStatus);
+    setFriendBio(t.bios[0]);
+    
+    // If there is only the welcome message in the log, update it to the new language's welcome message
+    if (messages.length === 1 && messages[0].id === "welcome") {
+      setMessages([
+        {
+          id: "welcome",
+          role: "model",
+          content: t.welcomeMessage,
+          timestamp: new Date().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" }),
+        }
+      ]);
+    }
+  }, [lang]);
+
+  const handleSend = async (textToSend: string) => {
+    const trimmed = textToSend.trim();
+    if (!trimmed) return;
+
+    const userMsg: Message = {
+      id: `user-${Date.now()}`,
+      role: "user",
+      content: trimmed,
+      timestamp: new Date().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" }),
+    };
+
+    setMessages((prev) => [...prev, userMsg]);
+    setInput("");
+    setIsLoading(true);
+
+    try {
+      // Map existing messages to API chat history
+      const history = messages.map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
+
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: trimmed, history, lang }),
+      });
+
+      if (!res.ok) {
+        throw new Error(t.errorMessage);
+      }
+
+      const data = await res.json();
+      
+      // Update stats based on conversation flow
+      setCloseness((prev) => Math.min(100, prev + Math.floor(Math.random() * 3) + 1));
+      setBrainCells((prev) => Math.max(0, prev + (Math.random() > 0.7 ? 1 : -1)));
+
+      const modelMsg: Message = {
+        id: `model-${Date.now()}`,
+        role: "model",
+        content: data.reply,
+        timestamp: new Date().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" }),
+      };
+
+      setMessages((prev) => [...prev, modelMsg]);
+    } catch (err: any) {
+      console.error(err);
+      const errMsg: Message = {
+        id: `err-${Date.now()}`,
+        role: "model",
+        content: t.errorMessage,
+        timestamp: new Date().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" }),
+      };
+      setMessages((prev) => [...prev, errMsg]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSend(input);
+  };
+
+  const clearChat = () => {
+    if (confirm(t.resetConfirm)) {
+      setMessages([
+        {
+          id: `welcome-${Date.now()}`,
+          role: "model",
+          content: t.resetWelcome,
+          timestamp: new Date().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" }),
+        },
+      ]);
+    }
+  };
+
+  // Playful action: trigger a quick tease/annoyance response
+  const triggerTease = () => {
+    const randomTease = t.teaseMessages[Math.floor(Math.random() * t.teaseMessages.length)];
+    handleSend(randomTease);
+  };
+
+  const randomizeBio = () => {
+    const filtered = t.bios.filter(b => b !== friendBio);
+    const random = filtered[Math.floor(Math.random() * filtered.length)];
+    setFriendBio(random);
+  };
+
+  const copyToClipboard = () => {
+    const text = messages.map(m => `[${m.role === 'user' ? 'Me' : friendName}] (${m.timestamp})\n${m.content}`).join("\n\n");
+    navigator.clipboard.writeText(text);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col items-center justify-center p-0 md:p-6 font-sans">
+      
+      {/* Container holding Profile Sidebar & Chat Window */}
+      <div id="main-container" className="w-full max-w-5xl h-screen md:h-[85vh] bg-slate-800 rounded-none md:rounded-3xl shadow-2xl border-0 md:border border-slate-700 overflow-hidden flex flex-col md:flex-row">
+        
+        {/* Sidebar (Desktop Profile Section) */}
+        <div id="sidebar" className="w-full md:w-80 bg-slate-800/90 border-b md:border-b-0 md:border-r border-slate-700/80 p-4 flex flex-col justify-between shrink-0">
+          
+          <div>
+            {/* App Branding & Title */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-700/60">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-yellow-500 rounded-xl text-slate-950">
+                  <Brain className="w-5 h-5 animate-pulse" />
+                </div>
+                <div>
+                  <h1 className="font-bold text-base tracking-tight text-yellow-400">{t.title}</h1>
+                  <p className="text-[10px] text-slate-400">{t.subtitle}</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setShowInfo(!showInfo)} 
+                className="p-1 hover:bg-slate-700/80 rounded-lg text-slate-400 transition"
+                title="도움말"
+              >
+                <HelpCircle className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Dynamic Language Selector Widget */}
+            <div className="mt-4 p-2 bg-slate-900/50 rounded-xl border border-slate-800 flex flex-col gap-1.5">
+              <div className="flex items-center gap-1.5 px-1 text-[11px] font-semibold text-slate-400">
+                <Globe className="w-3.5 h-3.5 text-yellow-500/80" />
+                <span>선택한 언어 / Language</span>
+              </div>
+              <div className="grid grid-cols-4 gap-1">
+                {LANG_DETAILS.map((l) => (
+                  <button
+                    key={l.code}
+                    onClick={() => setLang(l.code)}
+                    className={`py-1 rounded-lg text-xs font-semibold flex flex-col items-center justify-center transition border ${
+                      lang === l.code
+                        ? "bg-yellow-500 border-yellow-400 text-slate-950 shadow-sm"
+                        : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
+                    }`}
+                  >
+                    <span className="text-sm leading-none">{l.flag}</span>
+                    <span className="text-[9px] mt-0.5 tracking-tighter">{l.code.toUpperCase()}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Friend Interactive Card */}
+            <div className="mt-4 p-4 rounded-2xl bg-slate-750 border border-slate-700/50 relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-3 text-red-500/20 group-hover:scale-125 transition-transform">
+                <Flame className="w-16 h-16 rotate-12" />
+              </div>
+
+              {/* Avatar and Info */}
+              <div className="flex items-center gap-3 relative z-10">
+                <div className="w-12 h-12 rounded-full bg-yellow-500/15 border-2 border-yellow-500 flex items-center justify-center text-2xl select-none">
+                  🤪
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-bold text-slate-200 truncate">{friendName}</span>
+                    <span className="text-[10px] bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded-full font-mono">{t.friendBioTitle}</span>
+                  </div>
+                  <p className="text-xs text-green-400 truncate mt-0.5">● {friendStatus}</p>
+                </div>
+              </div>
+
+              {/* Bio block */}
+              <div className="mt-3.5 pt-3.5 border-t border-slate-700/50 text-xs text-slate-300 italic relative z-10 leading-relaxed">
+                "{friendBio}"
+              </div>
+
+              {/* Profile Config Button */}
+              <div className="mt-4 flex gap-2">
+                <button 
+                  onClick={() => setShowProfileModal(true)}
+                  className="flex-1 py-1.5 px-3 bg-slate-700 hover:bg-slate-650 text-slate-200 hover:text-white rounded-xl text-xs font-medium transition flex items-center justify-center gap-1.5"
+                >
+                  <User className="w-3.5 h-3.5" />
+                  {t.editProfileBtn}
+                </button>
+                <button 
+                  onClick={randomizeBio}
+                  className="p-1.5 bg-slate-700 hover:bg-slate-650 rounded-xl transition text-slate-300"
+                  title={t.randomizeBioBtn}
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Dynamic Status Meters */}
+            <div className="mt-4 space-y-3 p-3 bg-slate-900/40 rounded-xl border border-slate-800/60">
+              {/* Closeness Bar */}
+              <div>
+                <div className="flex justify-between text-[11px] font-medium text-slate-400 mb-1">
+                  <span className="flex items-center gap-1">
+                    <Flame className="w-3.5 h-3.5 text-red-400" />
+                    {t.closenessLabel}
+                  </span>
+                  <span className="font-mono text-red-400 font-semibold">{closeness}%</span>
+                </div>
+                <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+                  <motion.div 
+                    className="h-full bg-gradient-to-r from-orange-500 to-red-500"
+                    animate={{ width: `${closeness}%` }}
+                    transition={{ type: "spring", stiffness: 80 }}
+                  />
+                </div>
+              </div>
+
+              {/* Brain cell gauge */}
+              <div>
+                <div className="flex justify-between text-[11px] font-medium text-slate-400 mb-1">
+                  <span className="flex items-center gap-1">
+                    <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
+                    {t.brainCellsLabel}
+                  </span>
+                  <span className="font-mono text-yellow-400 font-semibold">{brainCells}</span>
+                </div>
+                <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+                  <motion.div 
+                    className="h-full bg-gradient-to-r from-yellow-500 to-amber-400"
+                    animate={{ width: `${Math.min(100, Math.max(5, brainCells * 12))}%` }}
+                    transition={{ type: "spring", stiffness: 80 }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Action: 참교육/시비 털기 버튼 */}
+            <div className="mt-4">
+              <button
+                onClick={triggerTease}
+                className="w-full py-2 bg-gradient-to-r from-red-600/30 to-orange-600/30 hover:from-red-600/40 hover:to-orange-600/40 border border-red-500/30 text-red-300 hover:text-white text-xs font-semibold rounded-xl transition flex items-center justify-center gap-2"
+              >
+                <ShieldAlert className="w-4 h-4 text-red-400 animate-bounce" />
+                {t.teaseBtn}
+              </button>
+            </div>
+          </div>
+
+          {/* Desktop Footer utilities */}
+          <div className="hidden md:flex items-center justify-between pt-4 border-t border-slate-700/40 text-[11px] text-slate-400">
+            <button 
+              onClick={copyToClipboard}
+              className="flex items-center gap-1 hover:text-slate-200 transition"
+            >
+              {isCopied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+              {t.backupBtn}
+            </button>
+            <button 
+              onClick={clearChat}
+              className="flex items-center gap-1 hover:text-red-400 transition"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              {t.resetBtn}
+            </button>
+          </div>
+        </div>
+
+        {/* Info overlay (Help Card) */}
+        <AnimatePresence>
+          {showInfo && (
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="absolute z-50 top-16 left-4 right-4 md:left-auto md:right-auto md:w-80 bg-slate-800 border border-yellow-500/40 p-4 rounded-2xl shadow-xl text-xs text-slate-200 animate-none"
+            >
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-bold text-yellow-400 flex items-center gap-1">
+                  <Brain className="w-4 h-4" />
+                  {t.helpTitle}
+                </span>
+                <button 
+                  onClick={() => setShowInfo(false)}
+                  className="text-[10px] bg-slate-700 px-1.5 py-0.5 rounded hover:bg-slate-600 text-slate-300"
+                >
+                  {t.helpClose}
+                </button>
+              </div>
+              <ul className="space-y-2 list-disc list-inside text-slate-300">
+                {t.helpPoints.map((p, index) => (
+                  <li key={index}>{p}</li>
+                ))}
+              </ul>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Chat Area */}
+        <div id="chat-section" className="flex-1 flex flex-col bg-slate-900/70 justify-between overflow-hidden relative">
+          
+          {/* Mobile Profile & Title Bar */}
+          <div className="p-3 bg-slate-800 border-b border-slate-700/60 flex items-center justify-between md:hidden">
+            <div className="flex items-center gap-2">
+              <div className="w-9 h-9 rounded-full bg-yellow-500/10 border border-yellow-500 flex items-center justify-center text-lg">
+                🤪
+              </div>
+              <div>
+                <div className="flex items-center gap-1">
+                  <h2 className="font-bold text-sm text-slate-100">{friendName}</h2>
+                  <span className="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
+                </div>
+                <p className="text-[10px] text-slate-400 truncate max-w-[140px]">{friendStatus}</p>
+              </div>
+            </div>
+            
+            {/* Language switcher widget for Mobile View */}
+            <div className="flex gap-1 items-center bg-slate-900/40 p-1 rounded-lg border border-slate-700/40">
+              {LANG_DETAILS.map((l) => (
+                <button
+                  key={l.code}
+                  onClick={() => setLang(l.code)}
+                  className={`text-xs px-1.5 py-0.5 rounded transition ${
+                    lang === l.code ? "bg-yellow-500 text-slate-950 font-bold" : "text-slate-400"
+                  }`}
+                >
+                  {l.flag}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* GOOGLE_ADSENSE_BANNER */}
+          <div className="mx-4 mt-3 p-3 bg-slate-800/60 border border-slate-700/50 rounded-2xl flex items-center justify-between text-xs text-slate-400">
+            <div className="flex items-center gap-2">
+              <span className="bg-slate-700 text-slate-300 text-[10px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider scale-90">{t.adBannerTitle}</span>
+              <span className="truncate">{t.adBannerText}</span>
+            </div>
+            <span className="text-[10px] text-slate-500 hidden sm:inline">AdSense Active ✨</span>
+          </div>
+
+          {/* Chat Bubble Scroll Area */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {messages.map((msg) => {
+              const isUser = msg.role === "user";
+              return (
+                <div 
+                  key={msg.id} 
+                  className={`flex items-start gap-2.5 ${isUser ? "flex-row-reverse" : "flex-row"}`}
+                >
+                  {/* Avatar for bot */}
+                  {!isUser && (
+                    <div className="w-8 h-8 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center text-base shrink-0 select-none">
+                      🤪
+                    </div>
+                  )}
+
+                  <div className={`flex flex-col max-w-[75%] ${isUser ? "items-end" : "items-start"}`}>
+                    {/* Bot Name label */}
+                    {!isUser && (
+                      <span className="text-[10px] text-slate-400 font-medium mb-1 ml-1">
+                        {friendName}
+                      </span>
+                    )}
+
+                    {/* Chat Bubble */}
+                    <div 
+                      className={`p-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap shadow-sm border ${
+                        isUser 
+                          ? "bg-yellow-500 text-slate-950 font-medium rounded-tr-none border-yellow-400" 
+                          : "bg-slate-800 text-slate-100 rounded-tl-none border-slate-700/80"
+                      }`}
+                    >
+                      {msg.content}
+                    </div>
+
+                    {/* Timestamp */}
+                    <span className="text-[9px] text-slate-500 mt-1 px-1 font-mono">
+                      {msg.timestamp}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+
+            {/* Typing indicator */}
+            {isLoading && (
+              <div className="flex items-start gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center text-base shrink-0 animate-spin">
+                  🧠
+                </div>
+                <div className="flex flex-col items-start max-w-[75%]">
+                  <span className="text-[10px] text-slate-400 font-medium mb-1 ml-1">{friendName}</span>
+                  <div className="bg-slate-800 p-3.5 rounded-2xl rounded-tl-none border border-slate-700/80 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-bounce delay-0" />
+                    <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-bounce delay-150" />
+                    <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-bounce delay-300" />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div ref={chatEndRef} />
+          </div>
+
+          {/* Preset Gimmick Suggestion Pills */}
+          <div className="px-4 py-2 bg-slate-900/30 border-t border-slate-800/80 flex gap-2 overflow-x-auto scrollbar-none shrink-0">
+            {t.presets.map((topic, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleSend(topic.prompt)}
+                disabled={isLoading}
+                className="whitespace-nowrap bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white px-3 py-1.5 rounded-full text-xs border border-slate-700/60 transition shadow-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {topic.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Form input bar */}
+          <form 
+            onSubmit={handleFormSubmit} 
+            className="p-3 bg-slate-800 border-t border-slate-700/60 flex items-center gap-2"
+          >
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              disabled={isLoading}
+              placeholder={t.placeholderInput}
+              className="flex-1 bg-slate-900 border border-slate-700/80 rounded-2xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-yellow-500 transition disabled:opacity-60"
+            />
+            <button
+              type="submit"
+              disabled={isLoading || !input.trim()}
+              className="p-2.5 bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold rounded-xl transition shadow-md disabled:bg-slate-700 disabled:text-slate-500 disabled:shadow-none shrink-0"
+              title="보내기"
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </form>
+        </div>
+      </div>
+
+      {/* Profile Modification Modal */}
+      <AnimatePresence>
+        {showProfileModal && (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-slate-800 border border-slate-700 rounded-3xl p-6 w-full max-w-sm shadow-2xl space-y-4"
+            >
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-700">
+                <Smile className="w-5 h-5 text-yellow-400" />
+                <h3 className="font-bold text-lg text-slate-100">{t.modalTitle}</h3>
+              </div>
+
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">{t.modalNameLabel}</label>
+                  <input 
+                    type="text" 
+                    value={friendName} 
+                    onChange={(e) => setFriendName(e.target.value.slice(0, 10))}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-yellow-500"
+                    placeholder="Jax"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">{t.modalStatusLabel}</label>
+                  <input 
+                    type="text" 
+                    value={friendStatus} 
+                    onChange={(e) => setFriendStatus(e.target.value.slice(0, 30))}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-yellow-500"
+                    placeholder="Eating leftovers"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">{t.modalBioLabel}</label>
+                  <textarea 
+                    value={friendBio} 
+                    onChange={(e) => setFriendBio(e.target.value.slice(0, 100))}
+                    rows={2}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-100 focus:outline-none focus:border-yellow-500 leading-relaxed"
+                    placeholder="..."
+                  />
+                </div>
+              </div>
+
+              <div className="pt-2 flex gap-2">
+                <button 
+                  onClick={() => {
+                    setFriendName(t.defaultFriendName);
+                    setFriendStatus(t.defaultFriendStatus);
+                    setFriendBio(t.bios[0]);
+                  }}
+                  className="flex-1 py-2 bg-slate-700 hover:bg-slate-650 text-slate-300 rounded-xl text-xs font-medium transition"
+                >
+                  {t.modalRestoreBtn}
+                </button>
+                <button 
+                  onClick={() => setShowProfileModal(false)}
+                  className="flex-1 py-2 bg-yellow-500 hover:bg-yellow-400 text-slate-950 rounded-xl text-xs font-bold transition"
+                >
+                  {t.modalSaveBtn}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+    </div>
+  );
+}
