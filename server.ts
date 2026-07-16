@@ -68,6 +68,29 @@ const SYSTEM_INSTRUCTIONS = {
 5. 用中文（简体）回答。`
 };
 
+// Helper function to handle fallback when a model is unavailable (e.g. 503 high demand or 429 quota)
+async function generateContentWithFallback(genAI: GoogleGenAI, params: { contents: any[]; config: any }) {
+  const modelsToTry = ["gemini-3.5-flash", "gemini-flash-latest", "gemini-3.1-flash-lite"];
+  let lastError: any = null;
+
+  for (const model of modelsToTry) {
+    try {
+      console.log(`[Gemini API] Attempting generation with model: ${model}`);
+      const response = await genAI.models.generateContent({
+        ...params,
+        model,
+      });
+      console.log(`[Gemini API] Successfully generated content using model: ${model}`);
+      return response;
+    } catch (error: any) {
+      lastError = error;
+      console.warn(`[Gemini API Warning] Model ${model} failed:`, error.message || error);
+    }
+  }
+
+  throw lastError || new Error("All fallback models failed to respond");
+}
+
 // API route for chat / custom ge-drip (개드립) generation
 app.post("/api/chat", async (req, res) => {
   try {
@@ -98,8 +121,7 @@ app.post("/api/chat", async (req, res) => {
     // Select proper system instruction
     const selectedInstruction = SYSTEM_INSTRUCTIONS[lang as keyof typeof SYSTEM_INSTRUCTIONS] || SYSTEM_INSTRUCTIONS.ko;
 
-    const response = await genAI.models.generateContent({
-      model: "gemini-3.5-flash",
+    const response = await generateContentWithFallback(genAI, {
       contents,
       config: {
         systemInstruction: selectedInstruction,
