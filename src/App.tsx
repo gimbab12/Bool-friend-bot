@@ -430,40 +430,6 @@ const LANG_DETAILS = [
   { code: "zh" as LangCode, flag: "🇨🇳", label: "简体中文" },
 ];
 
-function AdSenseBanner({ adBannerTitle, adBannerText }: { adBannerTitle: string; adBannerText: string }) {
-  useEffect(() => {
-    try {
-      // @ts-ignore
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-      console.warn("AdSense dynamic load error (expected during local preview/dev):", e);
-    }
-  }, []);
-
-  return (
-    <div className="mx-4 mt-3 p-3 bg-slate-800/60 border border-slate-700/50 rounded-2xl flex flex-col gap-2 text-xs text-slate-400">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="bg-slate-700 text-slate-300 text-[10px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider scale-90">{adBannerTitle}</span>
-          <span className="truncate font-semibold">{adBannerText}</span>
-        </div>
-        <span className="text-[10px] text-slate-500 hidden sm:inline">AdSense Active ✨</span>
-      </div>
-      {/* Real Google AdSense Tag */}
-      <div className="w-full overflow-hidden flex justify-center bg-slate-900/30 rounded-xl p-1 border border-slate-800/40 min-h-[90px]">
-        <ins
-          className="adsbygoogle"
-          style={{ display: "block", width: "100%", height: "90px" }}
-          data-ad-client="ca-pub-8139972839007359"
-          data-ad-slot="8139972839007359"
-          data-ad-format="horizontal"
-          data-full-width-responsive="false"
-        />
-      </div>
-    </div>
-  );
-}
-
 function KakaoAdFitBanner() {
   useEffect(() => {
     // Dynamically inject the Kakao AdFit script if not already present
@@ -534,13 +500,8 @@ function PremiumAdModal({
       });
     }, 1000);
 
-    // Dynamic AdSense load inside popup
-    try {
-      // @ts-ignore
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-      console.warn("Premium AdSense dynamic load error:", e);
-    }
+    // We rely on external scripts for ads in the popup.
+    // Ensure Kakao Adfit can reload if needed, but the script is handled globally or inline.
 
     return () => clearInterval(interval);
   }, [isOpen]);
@@ -584,13 +545,13 @@ function PremiumAdModal({
               PREMIUM AD SPONSOR
             </span>
             <div className="w-full flex justify-center py-2">
-              <ins
-                className="adsbygoogle"
-                style={{ display: "block", width: "100%", height: "250px" }}
-                data-ad-client="ca-pub-8139972839007359"
-                data-ad-slot="8139972839007359"
-                data-ad-format="rectangle"
-                data-full-width-responsive="true"
+              {/* Premium popup using the new Kakao AdFit 250x250 */}
+              <ins 
+                className="kakao_ad_area" 
+                style={{ display: "none" }}
+                data-ad-width="250"
+                data-ad-height="250"
+                data-ad-unit="DAN-eSm4iFhqWXLEsGNk"
               />
             </div>
           </div>
@@ -1147,9 +1108,6 @@ export default function App() {
               </div>
             </div>
           </div>
-
-          {/* GOOGLE_ADSENSE_BANNER */}
-          <AdSenseBanner adBannerTitle={t.adBannerTitle} adBannerText={t.adBannerText} />
 
           {/* Mobile-only PWA Installation Banner */}
           {showInstallBadge && (installPrompt || isIOS) && (
