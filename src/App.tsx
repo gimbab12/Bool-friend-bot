@@ -15,7 +15,8 @@ import {
   Brain,
   MessageCircle,
   Languages,
-  Globe
+  Globe,
+  ChevronDown
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -33,6 +34,7 @@ const TRANSLATIONS: Record<LangCode, {
   subtitle: string;
   defaultFriendName: string;
   defaultFriendStatus: string;
+  defaultFriendTag: string;
   friendBioTitle: string;
   editProfileBtn: string;
   randomizeBioBtn: string;
@@ -53,6 +55,7 @@ const TRANSLATIONS: Record<LangCode, {
   adBannerText: string;
   modalTitle: string;
   modalNameLabel: string;
+  modalTagLabel: string;
   modalStatusLabel: string;
   modalBioLabel: string;
   modalRestoreBtn: string;
@@ -73,6 +76,8 @@ const TRANSLATIONS: Record<LangCode, {
   userModalTitle: string;
   userModalNameLabel: string;
   userModalAvatarLabel: string;
+  userModalGenderLabel: string;
+  userModalAgeLabel: string;
   userModalSaveBtn: string;
   presets: { label: string; prompt: string }[];
   bios: string[];
@@ -90,6 +95,7 @@ const TRANSLATIONS: Record<LangCode, {
     subtitle: "현실성 0% 뇌피셜의 황제",
     defaultFriendName: "김덕배",
     defaultFriendStatus: "피시방에서 삼양라면 흡입 중 🍜",
+    defaultFriendTag: "(불알친구)",
     friendBioTitle: "20대 찐친",
     editProfileBtn: "프로필 수정",
     randomizeBioBtn: "한마디 랜덤 변경",
@@ -115,6 +121,7 @@ const TRANSLATIONS: Record<LangCode, {
     adBannerText: "구글 애드센스 광고 영역 (수익 극대화 존 💸)",
     modalTitle: "내 불알친구 커스텀",
     modalNameLabel: "친구 이름",
+    modalTagLabel: "관계 수식어 (예: (불알친구))",
     modalStatusLabel: "상태 메세지",
     modalBioLabel: "친구의 한마디 (Bio)",
     modalRestoreBtn: "기본값 복원",
@@ -139,9 +146,6 @@ const TRANSLATIONS: Record<LangCode, {
     userModalAgeLabel: "내 나이대",
     userModalSaveBtn: "저장하기",
     presets: [
-      { label: "🧦 양말 한 짝의 음모", prompt: "양말 한 짝 맨날 없어지는데 이거 왜 이럼?" },
-      { label: "🍜 모기 참교육법", prompt: "방에 모기 새끼 한 마리 있는데 개킹받네. 참교육법 점" },
-      { label: "💸 일확천금 뇌피셜", prompt: "돈 한 푼도 안 들이고 비트코인 100억 버는 법 알려줘" },
       { label: "🥱 출근하기 싫다", prompt: "내일 출근(등교)하기 진짜 존나게 싫은데 꿀팁 없냐?" },
       { label: "🍗 치킨 vs 피자", prompt: "오늘 저녁에 치킨 먹을까 피자 먹을까? 우주적 관점으로 골라줘" },
       { label: "👽 외계인은 실존할까", prompt: "진짜 외계인 있냐? 있으면 왜 지구에 안 나타남?" },
@@ -174,6 +178,7 @@ const TRANSLATIONS: Record<LangCode, {
     subtitle: "Lord of 0% Logical Conspiracy Theories",
     defaultFriendName: "Jax",
     defaultFriendStatus: "eating cold pizza in basement 🍕",
+    defaultFriendTag: "(Homie)",
     friendBioTitle: "20s Homie",
     editProfileBtn: "Edit Profile",
     randomizeBioBtn: "Randomize Bio",
@@ -199,6 +204,7 @@ const TRANSLATIONS: Record<LangCode, {
     adBannerText: "Google AdSense Zone (Maximizing Bro Profits 💸)",
     modalTitle: "Customize Your Bro",
     modalNameLabel: "Bro Name",
+    modalTagLabel: "Relationship Suffix (e.g. (Homie))",
     modalStatusLabel: "Status Message",
     modalBioLabel: "Bro's Saying (Bio)",
     modalRestoreBtn: "Restore Defaults",
@@ -223,9 +229,6 @@ const TRANSLATIONS: Record<LangCode, {
     userModalAgeLabel: "My Age",
     userModalSaveBtn: "Save",
     presets: [
-      { label: "🧦 Sock Conspiracy", prompt: "Why do my socks always lose their pair?" },
-      { label: "🦟 Mosquito Revenge", prompt: "There is one annoying mosquito in my room. Give me a 100% savage way to take revenge." },
-      { label: "💸 Get Rich Secret", prompt: "Tell me how to make $10 billion in bitcoin with $0 investment immediately." },
       { label: "🥱 Hate Work/School", prompt: "I literally hate working tomorrow. Give me a lifehack to escape." },
       { label: "🍗 Pizza vs Chicken", prompt: "Should I eat chicken or pizza tonight? Decide with a cosmic multi-dimensional view." },
       { label: "👽 Aliens", prompt: "Are aliens real? If so, why are they hiding from us?" },
@@ -258,6 +261,7 @@ const TRANSLATIONS: Record<LangCode, {
     subtitle: "現実性0% デタラメ陰謀論の王様",
     defaultFriendName: "ケンジ",
     defaultFriendStatus: "ネカフェでカップ麺爆食い中 🍜",
+    defaultFriendTag: "(ツレ)",
     friendBioTitle: "一生のツレ",
     editProfileBtn: "プロフィール編集",
     randomizeBioBtn: "一言をランダム変更",
@@ -283,6 +287,7 @@ const TRANSLATIONS: Record<LangCode, {
     adBannerText: "Google AdSense 広告エリア（億万長者への道 💸）",
     modalTitle: "ダチのカスタマイズ",
     modalNameLabel: "ダチの名前",
+    modalTagLabel: "関係の肩書き (例: (ツレ))",
     modalStatusLabel: "ステータスメッセージ",
     modalBioLabel: "ダチの一言 (Bio)",
     modalRestoreBtn: "デフォルトに戻す",
@@ -307,9 +312,6 @@ const TRANSLATIONS: Record<LangCode, {
     userModalAgeLabel: "自分の年代",
     userModalSaveBtn: "保存する",
     presets: [
-      { label: "🧦 消える靴下の陰謀", prompt: "靴下がいつも片方だけ消えるんだけどこれ何で？" },
-      { label: "🦟 蚊への復讐方法", prompt: "部屋にうざい蚊が1匹いる。絶対に許さない最強の復讐法を教えて" },
-      { label: "💸 一攫千金の裏ワザ", prompt: "元手0円で速攻ビットコインを100億円分稼ぐ方法教えて" },
       { label: "🥱 学校/仕事に行きたくない", prompt: "明日ガチで会社（学校）行きたくないんだけど回避の極意ある？" },
       { label: "🍗 チキン vs ピザ", prompt: "今日の夜飯、チキンとピザどっちがいい？宇宙の多次元的視点で選んで" },
       { label: "👽 宇宙人は実在するのか", prompt: "ガチで宇宙人っているの？いるなら何で隠れてんの？" },
@@ -342,6 +344,7 @@ const TRANSLATIONS: Record<LangCode, {
     subtitle: "胡编乱造、宇宙级扯淡带师",
     defaultFriendName: "阿强",
     defaultFriendStatus: "在网吧疯狂吸吮三鲜面 🍜",
+    defaultFriendTag: "(死党)",
     friendBioTitle: "沙雕损友",
     editProfileBtn: "修改死党属性",
     randomizeBioBtn: "随机更换签名",
@@ -367,6 +370,7 @@ const TRANSLATIONS: Record<LangCode, {
     adBannerText: "谷歌 AdSense 广告位 (损友致富大平层 💸)",
     modalTitle: "定制你的沙雕死党",
     modalNameLabel: "死党名字",
+    modalTagLabel: "关系称呼 (例如: (死党))",
     modalStatusLabel: "当前状态",
     modalBioLabel: "死党个性签名 (Bio)",
     modalRestoreBtn: "恢复默认阿强",
@@ -391,9 +395,6 @@ const TRANSLATIONS: Record<LangCode, {
     userModalAgeLabel: "我的年龄段",
     userModalSaveBtn: "保存",
     presets: [
-      { label: "🧦 消失的袜子阴谋", prompt: "为什么我的袜子总是莫名其妙只丢一只？" },
-      { label: "🦟 蚊子大仇得报", prompt: "屋里有一只巨特么烦人的蚊子，给我出一个100%残忍的复仇绝招" },
-      { label: "💸 零元暴富秘籍", prompt: "教我怎么在1分钱不花的情况下快速获得100亿比特币" },
       { label: "🥱 纯粹不想上班/上学", prompt: "明天真特么不想上班，给我来个不用请假就能逃避的骚操作" },
       { label: "🍗 炸鸡还是披萨", prompt: "今晚吃炸鸡还是披萨？请从宇宙多维空间宏观角度帮我决定" },
       { label: "👽 外星人实锤", prompt: "世界上真的有外星人吗？如果有，他们为什么天天躲着我们？" },
@@ -430,46 +431,7 @@ const LANG_DETAILS = [
   { code: "zh" as LangCode, flag: "🇨🇳", label: "简体中文" },
 ];
 
-function KakaoAdFitBanner() {
-  useEffect(() => {
-    // Dynamically inject the Kakao AdFit script if not already present
-    const scriptId = "kakao-adfit-script";
-    let script = document.getElementById(scriptId) as HTMLScriptElement;
-    if (!script) {
-      script = document.createElement("script");
-      script.id = scriptId;
-      script.type = "text/javascript";
-      script.src = "//t1.kakaocdn.net/kas/static/ba.min.js";
-      script.async = true;
-      document.body.appendChild(script);
-    }
-  }, []);
 
-  return (
-    <div className="mx-4 my-2.5 p-3 bg-slate-800/50 border border-slate-700/40 rounded-2xl flex flex-col items-center gap-1.5 text-xs text-slate-400">
-      <div className="flex items-center justify-between w-full px-1">
-        <div className="flex items-center gap-2">
-          <span className="bg-yellow-500 text-slate-950 text-[10px] px-1.5 py-0.5 rounded font-extrabold uppercase tracking-wider scale-90">
-            AdFit
-          </span>
-          <span className="font-semibold text-slate-200">카카오 애드핏 광고</span>
-        </div>
-        <span className="text-[10px] text-slate-500">Adfit Active ⚡</span>
-      </div>
-      
-      {/* Real Kakao AdFit Tag Wrapper */}
-      <div className="w-full flex justify-center bg-slate-950/40 rounded-xl p-1 border border-slate-800/40 min-h-[250px] overflow-hidden">
-        <ins 
-          className="kakao_ad_area" 
-          style={{ display: "none" }}
-          data-ad-width="250"
-          data-ad-height="250"
-          data-ad-unit="DAN-eSm4iFhqWXLEsGNk"
-        />
-      </div>
-    </div>
-  );
-}
 
 function PremiumAdModal({ 
   isOpen, 
@@ -599,6 +561,7 @@ export default function App() {
   
   // Customization states
   const [friendName, setFriendName] = useState(t.defaultFriendName);
+  const [friendTag, setFriendTag] = useState(t.defaultFriendTag);
   const [friendStatus, setFriendStatus] = useState(t.defaultFriendStatus);
   const [friendBio, setFriendBio] = useState(t.bios[0]);
   const [friendGender, setFriendGender] = useState<"male" | "female">("male");
@@ -612,6 +575,8 @@ export default function App() {
   const [userGender, setUserGender] = useState("male");
   const [userAgeGroup, setUserAgeGroup] = useState("20s");
   const [showUserProfileModal, setShowUserProfileModal] = useState(false);
+  const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
+  const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
 
   const getAvatarEmoji = () => {
     if (friendMood === "teasing") return "😜";
@@ -662,6 +627,18 @@ export default function App() {
     const ua = window.navigator.userAgent.toLowerCase();
     setIsIOS(/iphone|ipad|ipod/.test(ua));
 
+    // Dynamically inject the Kakao AdFit script if not already present
+    const scriptId = "kakao-adfit-script";
+    let script = document.getElementById(scriptId) as HTMLScriptElement;
+    if (!script) {
+      script = document.createElement("script");
+      script.id = scriptId;
+      script.type = "text/javascript";
+      script.src = "//t1.kakaocdn.net/kas/static/ba.min.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     };
@@ -685,6 +662,7 @@ export default function App() {
   // Synchronize dynamic friend info and first messages when language changes
   useEffect(() => {
     setFriendName(t.defaultFriendName);
+    setFriendTag(t.defaultFriendTag);
     setFriendStatus(t.defaultFriendStatus);
     setFriendBio(t.bios[0]);
     
@@ -819,13 +797,35 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col items-center justify-center p-0 md:p-6 font-sans">
+    <div className="h-[100dvh] md:min-h-screen bg-slate-900 text-slate-100 flex flex-col items-center justify-center p-0 md:p-6 font-sans overflow-hidden">
       
-      {/* Container holding Profile Sidebar & Chat Window */}
-      <div id="main-container" className="w-full max-w-5xl h-screen md:h-[85vh] bg-slate-800 rounded-none md:rounded-3xl shadow-2xl border-0 md:border border-slate-700 overflow-hidden flex flex-col md:flex-row">
+      {/* PC Leaderboard AdFit Banner (728x90) */}
+      <div className="hidden md:flex flex-col items-center justify-center w-full max-w-6xl bg-slate-800/60 border border-slate-700/60 rounded-2xl p-2 mb-4 shadow-xl shrink-0">
+        <div className="flex items-center justify-between w-full px-2 pb-1 border-b border-slate-700/40 mb-1.5">
+          <span className="bg-yellow-500 text-slate-950 text-[9px] px-1.5 py-0.5 rounded font-extrabold uppercase tracking-wide">
+            AD
+          </span>
+          <span className="text-[10px] font-semibold text-slate-400">카카오 애드핏 728x90</span>
+        </div>
+        <div className="w-[728px] h-[90px] overflow-hidden flex items-center justify-center bg-slate-950/40 rounded-xl border border-slate-800/40">
+          {/* <!-- [여기서부터 카카오 애드핏 728x90 코드 입력] --> */}
+          {/* @ts-ignore */}
+          <ins 
+            className="kakao_ad_area" 
+            style={{ display: "none" }}
+            data-ad-width="728"
+            data-ad-height="90"
+            data-ad-unit="DAN-a8Tksqyj7nKhU9z4"
+          />
+          {/* <!-- [여기서까지 카카오 애드핏 728x90 코드 입력] --> */}
+        </div>
+      </div>
+
+      {/* Container holding Profile Sidebar, Chat Window & PC Ad Banner */}
+      <div id="main-container" className="w-full max-w-6xl h-[100dvh] md:h-[80vh] flex flex-col md:flex-row items-center justify-center gap-0 md:gap-6 overflow-hidden pb-[safe-area-inset-bottom]">
         
         {/* Sidebar (Desktop Profile Section) */}
-        <div id="sidebar" className="w-full md:w-80 bg-slate-800/90 border-b md:border-b-0 md:border-r border-slate-700/80 p-4 flex flex-col justify-between shrink-0 md:overflow-y-auto scrollbar-thin">
+        <div id="sidebar" className="hidden md:flex md:w-80 bg-slate-800/90 border border-slate-700/80 rounded-3xl p-4 flex-col justify-between h-full shrink-0 overflow-y-auto scrollbar-thin shadow-2xl">
           
           <div>
             {/* App Branding & Title */}
@@ -848,25 +848,22 @@ export default function App() {
               </button>
             </div>
 
-            {/* Dynamic Language Selector Widget */}
-            <div className="mt-4 p-2 bg-slate-900/50 rounded-xl border border-slate-800 flex flex-col gap-1.5">
-              <div className="flex items-center gap-1.5 px-1 text-[11px] font-semibold text-slate-400">
+            {/* Small Compact Language Selector */}
+            <div className="mt-3 flex items-center justify-between px-1 bg-slate-900/30 p-1.5 rounded-xl border border-slate-800/40">
+              <span className="flex items-center gap-1 text-[10px] font-medium text-slate-400">
                 <Globe className="w-3.5 h-3.5 text-yellow-500/80" />
-                <span>선택한 언어 / Language</span>
-              </div>
-              <div className="grid grid-cols-4 gap-1">
+                Language
+              </span>
+              <div className="flex gap-1 bg-slate-900/40 p-0.5 rounded-lg border border-slate-700/40">
                 {LANG_DETAILS.map((l) => (
                   <button
                     key={l.code}
                     onClick={() => setLang(l.code)}
-                    className={`py-1 rounded-lg text-xs font-semibold flex flex-col items-center justify-center transition border ${
-                      lang === l.code
-                        ? "bg-yellow-500 border-yellow-400 text-slate-950 shadow-sm"
-                        : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
+                    className={`text-[10px] px-1.5 py-0.5 rounded transition ${
+                      lang === l.code ? "bg-yellow-500 text-slate-950 font-bold" : "text-slate-400 hover:text-slate-200"
                     }`}
                   >
-                    <span className="text-sm leading-none">{l.flag}</span>
-                    <span className="text-[9px] mt-0.5 tracking-tighter">{l.code.toUpperCase()}</span>
+                    {l.flag}
                   </button>
                 ))}
               </div>
@@ -886,7 +883,8 @@ export default function App() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 flex-wrap">
                     <span className="font-bold text-slate-200 truncate">{friendName}</span>
-                    <span className="text-[9px] bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 px-1.5 py-0.5 rounded-full font-semibold">
+                    {friendTag && <span className="text-xs text-yellow-500/80 font-semibold shrink-0">{friendTag}</span>}
+                    <span className="text-[9px] bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 px-1.5 py-0.5 rounded-full font-semibold shrink-0">
                       {friendGender === "male" ? "♂️ " : "♀️ "}{getAgeText()}
                     </span>
                   </div>
@@ -919,62 +917,13 @@ export default function App() {
                 </div>
                 <button 
                   onClick={() => setShowUserProfileModal(true)}
-                  className="w-full py-1.5 px-3 bg-slate-800 border border-slate-600 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl text-xs font-medium transition flex items-center justify-center gap-1.5"
+                  className="w-full py-1.5 px-3 bg-slate-800 border border-slate-600 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl text-xs font-medium transition flex items-center justify-center gap-1.5 relative"
                 >
                   <span className="text-sm">{userAvatar}</span>
-                  {t.userModalTitle}
+                  <span>{t.userModalTitle}</span>
+                  <span className="bg-yellow-500/20 text-yellow-400 text-[9px] font-bold px-1.5 py-0.5 rounded shrink-0">나</span>
                 </button>
               </div>
-            </div>
-
-            {/* Dynamic Status Meters */}
-            <div className="mt-4 space-y-3 p-3 bg-slate-900/40 rounded-xl border border-slate-800/60">
-              {/* Closeness Bar */}
-              <div>
-                <div className="flex justify-between text-[11px] font-medium text-slate-400 mb-1">
-                  <span className="flex items-center gap-1">
-                    <Flame className="w-3.5 h-3.5 text-red-400" />
-                    {t.closenessLabel}
-                  </span>
-                  <span className="font-mono text-red-400 font-semibold">{closeness}%</span>
-                </div>
-                <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
-                  <motion.div 
-                    className="h-full bg-gradient-to-r from-orange-500 to-red-500"
-                    animate={{ width: `${closeness}%` }}
-                    transition={{ type: "spring", stiffness: 80 }}
-                  />
-                </div>
-              </div>
-
-              {/* Brain cell gauge */}
-              <div>
-                <div className="flex justify-between text-[11px] font-medium text-slate-400 mb-1">
-                  <span className="flex items-center gap-1">
-                    <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
-                    {t.brainCellsLabel}
-                  </span>
-                  <span className="font-mono text-yellow-400 font-semibold">{brainCells}</span>
-                </div>
-                <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
-                  <motion.div 
-                    className="h-full bg-gradient-to-r from-yellow-500 to-amber-400"
-                    animate={{ width: `${Math.min(100, Math.max(5, brainCells * 12))}%` }}
-                    transition={{ type: "spring", stiffness: 80 }}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Action: 참교육/시비 털기 버튼 */}
-            <div className="mt-4">
-              <button
-                onClick={triggerTease}
-                className="w-full py-2 bg-gradient-to-r from-red-600/30 to-orange-600/30 hover:from-red-600/40 hover:to-orange-600/40 border border-red-500/30 text-red-300 hover:text-white text-xs font-semibold rounded-xl transition flex items-center justify-center gap-2"
-              >
-                <ShieldAlert className="w-4 h-4 text-red-400 animate-bounce" />
-                {t.teaseBtn}
-              </button>
             </div>
 
             {/* PWA Installation Card */}
@@ -1068,43 +1017,74 @@ export default function App() {
         </AnimatePresence>
 
         {/* Chat Area */}
-        <div id="chat-section" className="flex-1 flex flex-col bg-slate-900/70 justify-between overflow-hidden relative">
+        <div id="chat-section" className="w-full md:w-[420px] h-[100dvh] md:h-full bg-slate-800 rounded-none md:rounded-3xl shadow-2xl border-0 md:border border-slate-700 overflow-hidden flex flex-col justify-between relative shrink-0">
           
           {/* Mobile Profile & Title Bar */}
           <div className="p-3 bg-slate-800 border-b border-slate-700/60 flex items-center justify-between md:hidden">
-            <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-full bg-yellow-500/10 border border-yellow-500 flex items-center justify-center text-lg select-none">
+            <div 
+              onClick={() => setShowProfileModal(true)}
+              className="flex items-center gap-2 cursor-pointer hover:bg-slate-700/50 p-1.5 rounded-xl transition active:scale-95 select-none"
+              title={t.editProfileBtn}
+            >
+              <div className="w-9 h-9 rounded-full bg-yellow-500/10 border border-yellow-500 flex items-center justify-center text-lg shrink-0">
                 {getAvatarEmoji()}
               </div>
-              <div>
-                <div className="flex items-center gap-1">
-                  <h2 className="font-bold text-sm text-slate-100">{friendName}</h2>
-                  <span className="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1 flex-wrap">
+                  <h2 className="font-bold text-sm text-slate-100 truncate max-w-[120px]">{friendName}</h2>
+                  {friendTag && <span className="text-[10px] text-yellow-500/90 font-bold leading-none">{friendTag}</span>}
+                  <span className="w-1.5 h-1.5 bg-green-400 rounded-full shrink-0"></span>
                 </div>
-                <p className="text-[10px] text-slate-400 truncate max-w-[140px]">{friendStatus}</p>
+                <p className="text-[10px] text-slate-400 truncate max-w-[120px]">{friendStatus}</p>
               </div>
             </div>
             
-            {/* Language switcher widget for Mobile View */}
+            {/* Action buttons (User Profile + Language switcher dropdown) */}
             <div className="flex items-center gap-2">
               <button 
                 onClick={() => setShowUserProfileModal(true)}
-                className="w-8 h-8 rounded-full bg-slate-700 hover:bg-slate-600 border border-slate-600 flex items-center justify-center text-sm transition"
+                className="flex items-center gap-1 px-2 py-1 rounded-full bg-slate-700 hover:bg-slate-600 border border-slate-600 text-xs transition active:scale-95"
+                title="Edit My Profile"
               >
-                {userAvatar}
+                <span>{userAvatar}</span>
+                <span className="text-[10px] text-slate-300 font-bold">나</span>
               </button>
-              <div className="flex gap-1 items-center bg-slate-900/40 p-1 rounded-lg border border-slate-700/40">
-                {LANG_DETAILS.map((l) => (
-                  <button
-                    key={l.code}
-                    onClick={() => setLang(l.code)}
-                    className={`text-xs px-1.5 py-0.5 rounded transition ${
-                      lang === l.code ? "bg-yellow-500 text-slate-950 font-bold" : "text-slate-400"
-                    }`}
-                  >
-                    {l.flag}
-                  </button>
-                ))}
+
+              {/* Language switcher widget for Mobile View */}
+              <div className="relative">
+                <button
+                  onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
+                  className="w-8 h-8 rounded-full bg-slate-700 hover:bg-slate-600 border border-slate-600 flex items-center justify-center text-base transition relative active:scale-95"
+                  title="Change Language"
+                >
+                  {LANG_DETAILS.find((l) => l.code === lang)?.flag || "🌐"}
+                </button>
+                
+                {isLangDropdownOpen && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-40 bg-transparent" 
+                      onClick={() => setIsLangDropdownOpen(false)} 
+                    />
+                    <div className="absolute right-0 mt-2 w-28 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-50 py-1 overflow-hidden">
+                      {LANG_DETAILS.map((l) => (
+                        <button
+                          key={l.code}
+                          onClick={() => {
+                            setLang(l.code);
+                            setIsLangDropdownOpen(false);
+                          }}
+                          className={`w-full px-3 py-2 text-left text-xs flex items-center gap-2 hover:bg-slate-700 transition ${
+                            lang === l.code ? "bg-yellow-500/15 text-yellow-400 font-bold" : "text-slate-300"
+                          }`}
+                        >
+                          <span className="text-sm">{l.flag}</span>
+                          <span className="uppercase">{l.code}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -1170,12 +1150,14 @@ export default function App() {
                   <div className={`flex flex-col max-w-[75%] ${isUser ? "items-end" : "items-start"}`}>
                     {/* Bot/User Name label */}
                     {!isUser ? (
-                      <span className="text-[10px] text-slate-400 font-medium mb-1 ml-1">
+                      <span className="text-[10px] text-slate-400 font-medium mb-1 ml-1 flex items-center gap-1">
                         {friendName}
+                        {friendTag && <span className="text-[9px] text-yellow-500 font-bold">{friendTag}</span>}
                       </span>
                     ) : (
-                      <span className="text-[10px] text-slate-400 font-medium mb-1 mr-1 cursor-pointer hover:text-slate-300" onClick={() => setShowUserProfileModal(true)}>
+                      <span className="text-[10px] text-slate-400 font-medium mb-1 mr-1 cursor-pointer hover:text-slate-300 flex items-center gap-1" onClick={() => setShowUserProfileModal(true)}>
                         {userName}
+                        <span className="text-[9px] bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-1 rounded-full font-bold">나</span>
                       </span>
                     )}
 
@@ -1206,7 +1188,10 @@ export default function App() {
                   {getAvatarEmoji()}
                 </div>
                 <div className="flex flex-col items-start max-w-[75%]">
-                  <span className="text-[10px] text-slate-400 font-medium mb-1 ml-1">{friendName}</span>
+                  <span className="text-[10px] text-slate-400 font-medium mb-1 ml-1 flex items-center gap-1">
+                    {friendName}
+                    {friendTag && <span className="text-[9px] text-yellow-500 font-bold">{friendTag}</span>}
+                  </span>
                   <div className="bg-slate-800 p-3.5 rounded-2xl rounded-tl-none border border-slate-700/80 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-bounce delay-0" />
                     <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-bounce delay-150" />
@@ -1219,42 +1204,50 @@ export default function App() {
             <div ref={chatEndRef} />
           </div>
 
-          {/* KAKAO_ADFIT_BANNER */}
-          <KakaoAdFitBanner />
-
-          {/* Preset Gimmick Suggestion Pills */}
-          <div className="px-4 py-2 bg-slate-900/30 border-t border-slate-800/80 flex gap-2 overflow-x-auto scrollbar-none shrink-0">
-            {t.presets.map((topic, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleSend(topic.prompt)}
-                disabled={isLoading}
-                className="whitespace-nowrap bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white px-3 py-1.5 rounded-full text-xs border border-slate-700/60 transition shadow-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {topic.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Emoji Quick Picker */}
-          <div className="px-3 pt-2 pb-1 bg-slate-800 border-t border-slate-700/60 flex gap-2 overflow-x-auto scrollbar-none">
-            {["👍", "👎", "😂", "😡", "😭", "😍", "🖕", "❓", "🔥", "💯"].map(emoji => (
-               <button 
-                 key={emoji}
-                 type="button"
-                 onClick={() => setInput(prev => prev + emoji)}
-                 className="w-8 h-8 flex items-center justify-center text-lg bg-slate-900 rounded-lg border border-slate-700 hover:bg-slate-750 hover:border-yellow-500/50 transition shrink-0"
-               >
-                 {emoji}
-               </button>
-            ))}
-          </div>
-
           {/* Form input bar */}
           <form 
             onSubmit={handleFormSubmit} 
-            className="p-3 bg-slate-800 flex items-center gap-2"
+            className="p-3 bg-slate-800 flex items-center gap-2 shrink-0 relative"
           >
+            {/* Emoji Trigger Button with Dropdown/Popover */}
+            <div className="relative shrink-0">
+              <button
+                type="button"
+                onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)}
+                className="w-10 h-10 flex items-center justify-center text-xl bg-slate-900 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl border border-slate-700/80 transition active:scale-95"
+                title="이모티콘 선택"
+              >
+                😊
+              </button>
+              
+              {isEmojiPickerOpen && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-40 bg-transparent" 
+                    onClick={() => setIsEmojiPickerOpen(false)} 
+                  />
+                  {/* Emoji selection box popping up upwards */}
+                  <div className="absolute left-0 bottom-full mb-2 w-48 bg-slate-850 border border-slate-700 rounded-2xl shadow-2xl z-50 p-2.5">
+                    <div className="grid grid-cols-5 gap-1.5">
+                      {["👍", "👎", "😂", "😡", "😭", "😍", "🖕", "❓", "🔥", "💯"].map(emoji => (
+                        <button 
+                          key={emoji}
+                          type="button"
+                          onClick={() => {
+                            setInput(prev => prev + emoji);
+                            setIsEmojiPickerOpen(false);
+                          }}
+                          className="w-8 h-8 flex items-center justify-center text-lg rounded-lg hover:bg-slate-700 active:scale-95 transition"
+                        >
+                          {emoji}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
             <input
               type="text"
               value={input}
@@ -1272,6 +1265,50 @@ export default function App() {
               <Send className="w-4 h-4" />
             </button>
           </form>
+
+          {/* Mobile Sticky 320x50 AdFit Banner Space */}
+          <div className="md:hidden w-full flex flex-col items-center justify-center bg-slate-950/60 border-t border-slate-800/50 py-1 shrink-0">
+            <span className="text-[8px] text-slate-500 mb-0.5 uppercase tracking-wide">ADVERTISEMENT</span>
+            <div className="w-[320px] h-[50px] overflow-hidden flex items-center justify-center">
+              {/* <!-- [여기서부터 카카오 애드핏 320x50 코드 입력] --> */}
+              {/* @ts-ignore */}
+              <ins 
+                className="kakao_ad_area" 
+                style={{ display: "none" }}
+                data-ad-width="320"
+                data-ad-height="50"
+                data-ad-unit="DAN-GotOsRBzbpfKdqVx"
+              />
+              {/* <!-- [여기서까지 카카오 애드핏 320x50 코드 입력] --> */}
+            </div>
+          </div>
+        </div>
+
+        {/* PC 300x250 Banner adjacent to the centered chat window */}
+        <div className="hidden md:flex flex-col gap-3 shrink-0 w-[330px] bg-slate-800/90 border border-slate-700/80 rounded-3xl p-4 items-center justify-center h-full shadow-2xl self-center">
+          <div className="flex items-center justify-between w-full px-1 border-b border-slate-700/60 pb-2 mb-1">
+            <span className="bg-yellow-500 text-slate-950 text-[10px] px-2 py-0.5 rounded font-extrabold uppercase tracking-wide">
+              AD
+            </span>
+            <span className="text-xs font-semibold text-slate-300">카카오 애드핏 300x250</span>
+          </div>
+          <div className="flex-1 flex items-center justify-center w-full">
+            <div className="w-[300px] h-[250px] overflow-hidden flex items-center justify-center bg-slate-950/40 rounded-2xl p-1 border border-slate-800/40">
+              {/* <!-- [여기서부터 카카오 애드핏 300x250 코드 입력] --> */}
+              {/* @ts-ignore */}
+              <ins 
+                className="kakao_ad_area" 
+                style={{ display: "none" }}
+                data-ad-width="300"
+                data-ad-height="250"
+                data-ad-unit="DAN-86NF50E4DIBShyow"
+              />
+              {/* <!-- [여기서까지 카카오 애드핏 300x250 코드 입력] --> */}
+            </div>
+          </div>
+          <div className="text-[10px] text-slate-500 text-center select-none pt-2 border-t border-slate-700/40 w-full">
+            ADVERTISEMENT
+          </div>
         </div>
       </div>
 
@@ -1299,6 +1336,17 @@ export default function App() {
                     onChange={(e) => setFriendName(e.target.value.slice(0, 10))}
                     className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-yellow-500"
                     placeholder="Jax"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1">{t.modalTagLabel}</label>
+                  <input 
+                    type="text" 
+                    value={friendTag} 
+                    onChange={(e) => setFriendTag(e.target.value.slice(0, 15))}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-yellow-500"
+                    placeholder="(불알친구)"
                   />
                 </div>
 
@@ -1457,6 +1505,7 @@ export default function App() {
                 <button 
                   onClick={() => {
                     setFriendName(t.defaultFriendName);
+                    setFriendTag(t.defaultFriendTag);
                     setFriendStatus(t.defaultFriendStatus);
                     setFriendBio(t.bios[0]);
                     setFriendGender("male");
