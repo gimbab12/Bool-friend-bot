@@ -1,0 +1,24 @@
+{
+  "name": "불알친구 AI (SlangBro AI)",
+  "short_name": "불알친구 AI",
+  "description": "20대 남성 찐친 반말 콘셉트의 황당무계한 헛소리 생성기",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

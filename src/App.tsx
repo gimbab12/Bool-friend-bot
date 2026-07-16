@@ -60,6 +60,13 @@ const TRANSLATIONS: Record<LangCode, {
   presets: { label: string; prompt: string }[];
   bios: string[];
   teaseMessages: string[];
+  pwaInstallTitle: string;
+  pwaInstallDesc: string;
+  pwaInstallBtn: string;
+  premiumAdTitle: string;
+  premiumAdDesc: string;
+  premiumAdSupportBtn: string;
+  premiumAdCountdown: string;
 }> = {
   ko: {
     title: "불알친구 AI",
@@ -117,7 +124,14 @@ const TRANSLATIONS: Record<LangCode, {
       "뇌가 있냐? 존나 킹받네 ㅋㅋㅋ",
       "아 시발 어제 술 덜 깼냐? ㅋㅋㅋㅋ",
       "너 지금 나랑 장난하냐? ㅋㅋㅋㅋ",
-    ]
+    ],
+    pwaInstallTitle: "홈화면에 앱 추가 📱",
+    pwaInstallDesc: "앱으로 설치하면 덕배랑 훨씬 더 빠르고 쫀득하게 대화할 수 있어 ㅋㅋㅋ",
+    pwaInstallBtn: "홈화면에 추가하기 ⚡",
+    premiumAdTitle: "🔥 초고단가 골드 프리미엄 광고 🔥",
+    premiumAdDesc: "덕배랑 대화 5회 돌파 기념! 더 똑똑한(헛소리 잘하는) 덕배를 유지하기 위한 찐친 스폰서 타임 💸 (아래 광고를 보고 닫기 버튼을 누르면 이어서 대화 가능!)",
+    premiumAdSupportBtn: "광고 스킵하고 대화 이어가기 🏃",
+    premiumAdCountdown: "프리미엄 광고 스폰서 로딩 중... {seconds}초"
   },
   en: {
     title: "SlangBro AI",
@@ -175,7 +189,14 @@ const TRANSLATIONS: Record<LangCode, {
       "Do you even have a brain? Bro is tripping 💀",
       "Damn, you still drunk from yesterday? Lmao",
       "Are you trying to prank me or what, homie?",
-    ]
+    ],
+    pwaInstallTitle: "Add to Home Screen 📱",
+    pwaInstallDesc: "Install SlangBro to chat with Jax faster and smoother, with zero browser lag fr fr!",
+    pwaInstallBtn: "Install App ⚡",
+    premiumAdTitle: "🔥 High-Value Premium Bro Ad 🔥",
+    premiumAdDesc: "You've sent 5 messages! Sponsor SlangBro by loading this high-paying golden ad 💸 (Close it after the short countdown to keep talking to Jax!)",
+    premiumAdSupportBtn: "Skip and Keep Chatting 🏃",
+    premiumAdCountdown: "Premium Ad loading... {seconds}s"
   },
   ja: {
     title: "ダチ公 AI",
@@ -230,10 +251,17 @@ const TRANSLATIONS: Record<LangCode, {
     teaseMessages: [
       "おいおいマジで言ってんのかお前ｗｗｗ",
       "ちょっと何言ってるか分からないんだけどｗｗ",
-      "脳みそ詰まってんの？バカすぎて草ｗｗｗ",
+      "脳みそ詰まってんの？バкаすぎて草ｗｗｗ",
       "うわ、昨日の酒がまだ残ってんだろお前ｗｗ",
       "俺をからかってんのかお前？ｗｗ",
-    ]
+    ],
+    pwaInstallTitle: "ホーム画面にアプリ追加 📱",
+    pwaInstallDesc: "アプリとしてインストールすれば、ケンジとより早く、快適に煽り合えるぞｗｗ",
+    pwaInstallBtn: "ホーム画面に追加 ⚡",
+    premiumAdTitle: "🔥 超高単価ゴールドプレミアム広告 🔥",
+    premiumAdDesc: "ケンジとのトーク5回突破！ダチのために超ウルトラ高単価広告をスポンサーしてくれよな 💸 (カウントダウン終了後にスキップして会話に戻れるぞｗｗ)",
+    premiumAdSupportBtn: "広告をスキップしてツレに戻る 🏃",
+    premiumAdCountdown: "プレミアム広告読み込み中... {seconds}秒"
   },
   zh: {
     title: "沙雕死党 AI",
@@ -291,7 +319,14 @@ const TRANSLATIONS: Record<LangCode, {
       "兄弟你还有脑细胞吗？笑死我了 ㅋㅋㅋ",
       "怎么着，昨晚假酒喝多了还没醒？ ㅋㅋㅋ",
       "你丫是不是找抽，敢跟哥们儿逗乐子？ ㅋㅋㅋ",
-    ]
+    ],
+    pwaInstallTitle: "添加应用到主屏幕 📱",
+    pwaInstallDesc: "将沙雕死党安装为独立App，与阿强更流畅地激情对线，开黑秒速响应！",
+    pwaInstallBtn: "添加到主屏幕 ⚡",
+    premiumAdTitle: "🔥 尊贵千金黄金贴片广告 🔥",
+    premiumAdDesc: "喜报！你已经和阿强激情对线了 5 回合！为了让阿强脑细胞更健全，请赞助一段尊贵的超级广告 💸 (等倒计时结束即可关闭，继续和阿强对喷！)",
+    premiumAdSupportBtn: "跳过广告继续激情对线 🏃",
+    premiumAdCountdown: "尊贵广告加载中... {seconds}秒"
   }
 };
 
@@ -301,6 +336,155 @@ const LANG_DETAILS = [
   { code: "ja" as LangCode, flag: "🇯🇵", label: "日本語" },
   { code: "zh" as LangCode, flag: "🇨🇳", label: "简体中文" },
 ];
+
+function AdSenseBanner({ adBannerTitle, adBannerText }: { adBannerTitle: string; adBannerText: string }) {
+  useEffect(() => {
+    try {
+      // @ts-ignore
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {
+      console.warn("AdSense dynamic load error (expected during local preview/dev):", e);
+    }
+  }, []);
+
+  return (
+    <div className="mx-4 mt-3 p-3 bg-slate-800/60 border border-slate-700/50 rounded-2xl flex flex-col gap-2 text-xs text-slate-400">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="bg-slate-700 text-slate-300 text-[10px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider scale-90">{adBannerTitle}</span>
+          <span className="truncate font-semibold">{adBannerText}</span>
+        </div>
+        <span className="text-[10px] text-slate-500 hidden sm:inline">AdSense Active ✨</span>
+      </div>
+      {/* Real Google AdSense Tag */}
+      <div className="w-full overflow-hidden flex justify-center bg-slate-900/30 rounded-xl p-1 border border-slate-800/40 min-h-[90px]">
+        <ins
+          className="adsbygoogle"
+          style={{ display: "block", width: "100%", height: "90px" }}
+          data-ad-client="ca-pub-8139972839007359"
+          data-ad-slot="8139972839007359"
+          data-ad-format="horizontal"
+          data-full-width-responsive="false"
+        />
+      </div>
+    </div>
+  );
+}
+
+function PremiumAdModal({ 
+  isOpen, 
+  onClose, 
+  t 
+}: { 
+  isOpen: boolean; 
+  onClose: () => void; 
+  t: any;
+}) {
+  const [countdown, setCountdown] = useState(5);
+  const [canSkip, setCanSkip] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    setCountdown(5);
+    setCanSkip(false);
+
+    const interval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setCanSkip(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    // Dynamic AdSense load inside popup
+    try {
+      // @ts-ignore
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {
+      console.warn("Premium AdSense dynamic load error:", e);
+    }
+
+    return () => clearInterval(interval);
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  return (
+    <AnimatePresence>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[100] bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4"
+      >
+        <motion.div 
+          initial={{ scale: 0.9, y: 20 }}
+          animate={{ scale: 1, y: 0 }}
+          exit={{ scale: 0.9, y: 20 }}
+          className="bg-gradient-to-b from-slate-900 to-slate-950 border-2 border-yellow-500/50 rounded-3xl p-6 max-w-md w-full relative overflow-hidden shadow-[0_0_50px_rgba(234,179,8,0.25)] text-center flex flex-col gap-4"
+        >
+          {/* Shine effect background */}
+          <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,rgba(234,179,8,0.05)_0,transparent_60%)] pointer-events-none" />
+
+          {/* Golden Sparkly Icon */}
+          <div className="mx-auto w-16 h-16 rounded-2xl bg-yellow-500/20 border border-yellow-500/40 flex items-center justify-center text-yellow-400 text-3xl animate-bounce">
+            💰
+          </div>
+
+          <div>
+            <h3 className="font-extrabold text-base text-yellow-400 uppercase tracking-tight flex items-center justify-center gap-1.5">
+              {t.premiumAdTitle}
+            </h3>
+            <p className="text-xs text-slate-300 mt-2 leading-relaxed">
+              {t.premiumAdDesc}
+            </p>
+          </div>
+
+          {/* High CPC Premium Ad Container */}
+          <div className="bg-slate-950/80 rounded-2xl p-2.5 border border-yellow-500/20 min-h-[250px] flex flex-col justify-center items-center relative overflow-hidden">
+            <span className="absolute top-1.5 left-2 bg-yellow-500 text-slate-950 text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider scale-90">
+              PREMIUM AD SPONSOR
+            </span>
+            <div className="w-full flex justify-center py-2">
+              <ins
+                className="adsbygoogle"
+                style={{ display: "block", width: "100%", height: "250px" }}
+                data-ad-client="ca-pub-8139972839007359"
+                data-ad-slot="8139972839007359"
+                data-ad-format="rectangle"
+                data-full-width-responsive="true"
+              />
+            </div>
+          </div>
+
+          {/* Action Countdown Button */}
+          <div className="mt-2 relative z-10">
+            {canSkip ? (
+              <button
+                onClick={onClose}
+                className="w-full py-3 bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-400 hover:to-amber-400 text-slate-950 font-bold rounded-2xl text-xs shadow-lg shadow-yellow-500/10 hover:shadow-yellow-500/20 transition flex items-center justify-center gap-2 group"
+              >
+                {t.premiumAdSupportBtn}
+              </button>
+            ) : (
+              <button
+                disabled
+                className="w-full py-3 bg-slate-800 text-slate-400 font-bold rounded-2xl text-xs border border-slate-700 cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                <div className="w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
+                {t.premiumAdCountdown.replace("{seconds}", countdown.toString())}
+              </button>
+            )}
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
 
 export default function App() {
   const [lang, setLang] = useState<LangCode>("ko");
@@ -328,6 +512,39 @@ export default function App() {
   const [isCopied, setIsCopied] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+
+  // PWA A2HS (Add to Home Screen) States
+  const [installPrompt, setInstallPrompt] = useState<any>(null);
+  const [isIOS, setIsIOS] = useState(false);
+  const [showInstallBadge, setShowInstallBadge] = useState(true);
+
+  // Premium ad tracking states
+  const [userMessageCount, setUserMessageCount] = useState(0);
+  const [showPremiumAd, setShowPremiumAd] = useState(false);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+    };
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+    // Detect if device is iOS
+    const ua = window.navigator.userAgent.toLowerCase();
+    setIsIOS(/iphone|ipad|ipod/.test(ua));
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    console.log(`PWA Install Choice Outcome: ${outcome}`);
+    setInstallPrompt(null);
+  };
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -358,6 +575,15 @@ export default function App() {
   const handleSend = async (textToSend: string) => {
     const trimmed = textToSend.trim();
     if (!trimmed) return;
+
+    // Trigger premium high-paying ad overlay every 5 messages to maximize revenue
+    setUserMessageCount((prev) => {
+      const nextCount = prev + 1;
+      if (nextCount > 0 && nextCount % 5 === 0) {
+        setShowPremiumAd(true);
+      }
+      return nextCount;
+    });
 
     const userMsg: Message = {
       id: `user-${Date.now()}`,
@@ -459,7 +685,7 @@ export default function App() {
       <div id="main-container" className="w-full max-w-5xl h-screen md:h-[85vh] bg-slate-800 rounded-none md:rounded-3xl shadow-2xl border-0 md:border border-slate-700 overflow-hidden flex flex-col md:flex-row">
         
         {/* Sidebar (Desktop Profile Section) */}
-        <div id="sidebar" className="w-full md:w-80 bg-slate-800/90 border-b md:border-b-0 md:border-r border-slate-700/80 p-4 flex flex-col justify-between shrink-0">
+        <div id="sidebar" className="w-full md:w-80 bg-slate-800/90 border-b md:border-b-0 md:border-r border-slate-700/80 p-4 flex flex-col justify-between shrink-0 md:overflow-y-auto scrollbar-thin">
           
           <div>
             {/* App Branding & Title */}
@@ -599,6 +825,46 @@ export default function App() {
                 {t.teaseBtn}
               </button>
             </div>
+
+            {/* PWA Installation Card */}
+            {showInstallBadge && (installPrompt || isIOS) && (
+              <div className="mt-4 p-3.5 bg-gradient-to-br from-yellow-500/20 to-amber-500/10 border border-yellow-500/30 rounded-2xl relative overflow-hidden">
+                <button 
+                  onClick={(e) => { e.stopPropagation(); setShowInstallBadge(false); }}
+                  className="absolute top-2 right-2 text-slate-400 hover:text-slate-200 text-xs font-bold w-5 h-5 flex items-center justify-center bg-slate-800/40 rounded-full"
+                >
+                  ×
+                </button>
+                <div className="flex gap-2.5 items-start">
+                  <div className="p-2 bg-yellow-500/20 rounded-xl text-yellow-400 shrink-0 mt-0.5">
+                    <Sparkles className="w-4 h-4 animate-pulse" />
+                  </div>
+                  <div className="flex-1 text-left min-w-0">
+                    <h4 className="font-bold text-xs text-yellow-400 tracking-tight">{t.pwaInstallTitle}</h4>
+                    <p className="text-[10px] text-slate-300 mt-1 leading-relaxed">
+                      {isIOS 
+                        ? (lang === "ko" 
+                            ? "Safari 브라우저의 [공유 📤] 버튼을 누르고 [홈 화면에 추가]를 클릭하세요!" 
+                            : lang === "ja" 
+                            ? "Safariブラウザの[共有 📤]ボタンをタップし、[ホーム画面に追加]を選択してください！" 
+                            : lang === "zh" 
+                            ? "请在 Safari 浏览器中点击 [分享 📤] 按钮，然后选择 [添加到主屏幕]！" 
+                            : "Tap the [Share 📤] button in Safari, then select [Add to Home Screen]!")
+                        : t.pwaInstallDesc
+                      }
+                    </p>
+                    {!isIOS && installPrompt && (
+                      <button
+                        onClick={handleInstallClick}
+                        className="mt-2.5 w-full py-1.5 bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold rounded-xl text-[11px] shadow-sm transition"
+                      >
+                        {t.pwaInstallBtn}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Desktop Footer utilities */}
@@ -685,13 +951,45 @@ export default function App() {
           </div>
 
           {/* GOOGLE_ADSENSE_BANNER */}
-          <div className="mx-4 mt-3 p-3 bg-slate-800/60 border border-slate-700/50 rounded-2xl flex items-center justify-between text-xs text-slate-400">
-            <div className="flex items-center gap-2">
-              <span className="bg-slate-700 text-slate-300 text-[10px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider scale-90">{t.adBannerTitle}</span>
-              <span className="truncate">{t.adBannerText}</span>
+          <AdSenseBanner adBannerTitle={t.adBannerTitle} adBannerText={t.adBannerText} />
+
+          {/* Mobile-only PWA Installation Banner */}
+          {showInstallBadge && (installPrompt || isIOS) && (
+            <div className="mx-4 mt-3 p-3 bg-gradient-to-r from-yellow-500/20 to-amber-500/10 border border-yellow-500/30 rounded-2xl md:hidden relative overflow-hidden flex flex-col gap-2">
+              <button 
+                onClick={(e) => { e.stopPropagation(); setShowInstallBadge(false); }}
+                className="absolute top-2 right-2 text-slate-400 hover:text-slate-200 text-[10px] font-bold w-4 h-4 flex items-center justify-center bg-slate-800/40 rounded-full"
+              >
+                ×
+              </button>
+              <div className="flex gap-2 items-start">
+                <Sparkles className="w-4 h-4 text-yellow-400 shrink-0 mt-0.5 animate-pulse" />
+                <div className="flex-1 min-w-0 pr-4">
+                  <h4 className="font-bold text-[11px] text-yellow-400">{t.pwaInstallTitle}</h4>
+                  <p className="text-[10px] text-slate-300 mt-0.5 leading-relaxed">
+                    {isIOS 
+                      ? (lang === "ko" 
+                          ? "Safari 공유 📤 버튼 -> [홈 화면에 추가] 클릭!" 
+                          : lang === "ja" 
+                          ? "Safari共有 📤 ボタン -> [ホーム画面に追加]をタップ！" 
+                          : lang === "zh" 
+                          ? "Safari 分享 📤 按钮 -> [添加到主屏幕]！" 
+                          : "Safari Share 📤 -> [Add to Home Screen]!")
+                      : t.pwaInstallDesc
+                    }
+                  </p>
+                </div>
+              </div>
+              {!isIOS && installPrompt && (
+                <button
+                  onClick={handleInstallClick}
+                  className="w-full py-1.5 bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold rounded-xl text-[10px] shadow-sm transition"
+                >
+                  {t.pwaInstallBtn}
+                </button>
+              )}
             </div>
-            <span className="text-[10px] text-slate-500 hidden sm:inline">AdSense Active ✨</span>
-          </div>
+          )}
 
           {/* Chat Bubble Scroll Area */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -868,6 +1166,13 @@ export default function App() {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Premium Ad Interstitial Modal */}
+      <PremiumAdModal 
+        isOpen={showPremiumAd} 
+        onClose={() => setShowPremiumAd(false)} 
+        t={t} 
+      />
 
     </div>
   );
