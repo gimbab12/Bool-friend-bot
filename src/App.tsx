@@ -821,8 +821,11 @@ export default function App() {
         </div>
       </div>
 
-      {/* Container holding Profile Sidebar, Chat Window & PC Ad Banner */}
-      <div id="main-container" className="w-full max-w-6xl h-[100dvh] md:h-[80vh] flex flex-col md:flex-row items-center justify-center gap-0 md:gap-6 overflow-hidden pb-[safe-area-inset-bottom]">
+      {/* Dynamic desktop outer layout that centers the main container + our vertical skyscraper ad */}
+      <div className="w-full max-w-7xl flex flex-col xl:flex-row items-center justify-center gap-0 xl:gap-6">
+        
+        {/* Container holding Profile Sidebar, Chat Window & PC Ad Banner */}
+        <div id="main-container" className="w-full max-w-6xl h-[100dvh] md:h-[80vh] flex flex-col md:flex-row items-center justify-center gap-0 md:gap-6 overflow-hidden pb-[safe-area-inset-bottom]">
         
         {/* Sidebar (Desktop Profile Section) */}
         <div id="sidebar" className="hidden md:flex md:w-80 bg-slate-800/90 border border-slate-700/80 rounded-3xl p-4 flex-col justify-between h-full shrink-0 overflow-y-auto scrollbar-thin shadow-2xl">
@@ -1311,6 +1314,35 @@ export default function App() {
           </div>
         </div>
       </div>
+
+      {/* Desktop-only vertical Skyscraper Banner (160x600) */}
+      <div className="hidden xl:flex flex-col gap-3 shrink-0 w-[190px] bg-slate-800/90 border border-slate-700/80 rounded-3xl p-3 items-center justify-center h-[80vh] min-h-[640px] shadow-2xl self-center">
+        <div className="flex items-center justify-between w-full px-1 border-b border-slate-700/60 pb-2 mb-1">
+          <span className="bg-yellow-500 text-slate-950 text-[10px] px-1.5 py-0.5 rounded font-extrabold uppercase tracking-wide animate-pulse">
+            AD
+          </span>
+          <span className="text-[10px] font-semibold text-slate-300">카카오 애드핏 160x600</span>
+        </div>
+        <div className="flex-1 flex items-center justify-center w-full">
+          <div className="w-[160px] h-[600px] overflow-hidden flex items-center justify-center bg-slate-950/40 rounded-2xl p-1 border border-slate-800/40">
+            {/* <!-- [여기서부터 카카오 애드핏 160x600 코드 입력] --> */}
+            {/* @ts-ignore */}
+            <ins 
+              className="kakao_ad_area" 
+              style={{ display: "none" }}
+              data-ad-width="160"
+              data-ad-height="600"
+              data-ad-unit="DAN-5UCnpbBXuqIrbf2q"
+            />
+            {/* <!-- [여기서까지 카카오 애드핏 160x600 코드 입력] --> */}
+          </div>
+        </div>
+        <div className="text-[10px] text-slate-500 text-center select-none pt-2 border-t border-slate-700/40 w-full">
+          ADVERTISEMENT
+        </div>
+      </div>
+
+    </div>
 
       {/* Profile Modification Modal */}
       <AnimatePresence>
