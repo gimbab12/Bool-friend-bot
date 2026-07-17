@@ -797,10 +797,10 @@ export default function App() {
   };
 
   return (
-    <div className="h-[100dvh] md:min-h-screen bg-slate-900 text-slate-100 flex flex-col items-center justify-center p-0 md:p-6 font-sans overflow-hidden">
+    <div className="h-[100dvh] md:h-screen bg-slate-900 text-slate-100 flex flex-col items-center justify-start p-0 md:p-4 font-sans overflow-y-auto scrollbar-thin">
       
       {/* PC Leaderboard AdFit Banner (728x90) */}
-      <div className="hidden md:flex flex-col items-center justify-center w-full max-w-6xl bg-slate-800/60 border border-slate-700/60 rounded-2xl p-2 mb-4 shadow-xl shrink-0">
+      <div className="hidden md:flex flex-col items-center justify-center w-full max-w-6xl bg-slate-800/60 border border-slate-700/60 rounded-2xl p-2 mb-3 shadow-xl shrink-0">
         <div className="flex items-center justify-between w-full px-2 pb-1 border-b border-slate-700/40 mb-1.5">
           <span className="bg-yellow-500 text-slate-950 text-[9px] px-1.5 py-0.5 rounded font-extrabold uppercase tracking-wide">
             AD
@@ -821,11 +821,8 @@ export default function App() {
         </div>
       </div>
 
-      {/* Dynamic desktop outer layout that centers the main container + our vertical skyscraper ad */}
-      <div className="w-full max-w-7xl flex flex-col xl:flex-row items-center justify-center gap-0 xl:gap-6">
-        
-        {/* Container holding Profile Sidebar, Chat Window & PC Ad Banner */}
-        <div id="main-container" className="w-full max-w-6xl h-[100dvh] md:h-[80vh] flex flex-col md:flex-row items-center justify-center gap-0 md:gap-6 overflow-hidden pb-[safe-area-inset-bottom]">
+      {/* Container holding Profile Sidebar, Chat Window & PC Ad Banner */}
+      <div id="main-container" className="w-full max-w-6xl h-[100dvh] md:h-[calc(100vh-170px)] md:min-h-[640px] md:max-h-[800px] flex flex-col md:flex-row items-center justify-center gap-0 md:gap-6 overflow-hidden pb-[safe-area-inset-bottom] shrink-0">
         
         {/* Sidebar (Desktop Profile Section) */}
         <div id="sidebar" className="hidden md:flex md:w-80 bg-slate-800/90 border border-slate-700/80 rounded-3xl p-4 flex-col justify-between h-full shrink-0 overflow-y-auto scrollbar-thin shadow-2xl">
@@ -1287,26 +1284,26 @@ export default function App() {
           </div>
         </div>
 
-        {/* PC 300x250 Banner adjacent to the centered chat window */}
-        <div className="hidden md:flex flex-col gap-3 shrink-0 w-[330px] bg-slate-800/90 border border-slate-700/80 rounded-3xl p-4 items-center justify-center h-full shadow-2xl self-center">
+        {/* PC 160x600 Skyscraper Banner adjacent to the centered chat window */}
+        <div className="hidden md:flex flex-col gap-3 shrink-0 w-[190px] bg-slate-800/90 border border-slate-700/80 rounded-3xl p-3 items-center justify-center h-full min-h-[640px] shadow-2xl self-center">
           <div className="flex items-center justify-between w-full px-1 border-b border-slate-700/60 pb-2 mb-1">
-            <span className="bg-yellow-500 text-slate-950 text-[10px] px-2 py-0.5 rounded font-extrabold uppercase tracking-wide">
+            <span className="bg-yellow-500 text-slate-950 text-[10px] px-1.5 py-0.5 rounded font-extrabold uppercase tracking-wide animate-pulse">
               AD
             </span>
-            <span className="text-xs font-semibold text-slate-300">카카오 애드핏 300x250</span>
+            <span className="text-[10px] font-semibold text-slate-300">애드핏 160x600</span>
           </div>
           <div className="flex-1 flex items-center justify-center w-full">
-            <div className="w-[300px] h-[250px] overflow-hidden flex items-center justify-center bg-slate-950/40 rounded-2xl p-1 border border-slate-800/40">
-              {/* <!-- [여기서부터 카카오 애드핏 300x250 코드 입력] --> */}
+            <div className="w-[160px] h-[600px] overflow-hidden flex items-center justify-center bg-slate-950/40 rounded-2xl p-1 border border-slate-800/40">
+              {/* <!-- [여기서부터 카카오 애드핏 160x600 코드 입력] --> */}
               {/* @ts-ignore */}
               <ins 
                 className="kakao_ad_area" 
                 style={{ display: "none" }}
-                data-ad-width="300"
-                data-ad-height="250"
-                data-ad-unit="DAN-86NF50E4DIBShyow"
+                data-ad-width="160"
+                data-ad-height="600"
+                data-ad-unit="DAN-5UCnpbBXuqIrbf2q"
               />
-              {/* <!-- [여기서까지 카카오 애드핏 300x250 코드 입력] --> */}
+              {/* <!-- [여기서까지 카카오 애드핏 160x600 코드 입력] --> */}
             </div>
           </div>
           <div className="text-[10px] text-slate-500 text-center select-none pt-2 border-t border-slate-700/40 w-full">
@@ -1314,35 +1311,6 @@ export default function App() {
           </div>
         </div>
       </div>
-
-      {/* Desktop-only vertical Skyscraper Banner (160x600) */}
-      <div className="hidden xl:flex flex-col gap-3 shrink-0 w-[190px] bg-slate-800/90 border border-slate-700/80 rounded-3xl p-3 items-center justify-center h-[80vh] min-h-[640px] shadow-2xl self-center">
-        <div className="flex items-center justify-between w-full px-1 border-b border-slate-700/60 pb-2 mb-1">
-          <span className="bg-yellow-500 text-slate-950 text-[10px] px-1.5 py-0.5 rounded font-extrabold uppercase tracking-wide animate-pulse">
-            AD
-          </span>
-          <span className="text-[10px] font-semibold text-slate-300">카카오 애드핏 160x600</span>
-        </div>
-        <div className="flex-1 flex items-center justify-center w-full">
-          <div className="w-[160px] h-[600px] overflow-hidden flex items-center justify-center bg-slate-950/40 rounded-2xl p-1 border border-slate-800/40">
-            {/* <!-- [여기서부터 카카오 애드핏 160x600 코드 입력] --> */}
-            {/* @ts-ignore */}
-            <ins 
-              className="kakao_ad_area" 
-              style={{ display: "none" }}
-              data-ad-width="160"
-              data-ad-height="600"
-              data-ad-unit="DAN-5UCnpbBXuqIrbf2q"
-            />
-            {/* <!-- [여기서까지 카카오 애드핏 160x600 코드 입력] --> */}
-          </div>
-        </div>
-        <div className="text-[10px] text-slate-500 text-center select-none pt-2 border-t border-slate-700/40 w-full">
-          ADVERTISEMENT
-        </div>
-      </div>
-
-    </div>
 
       {/* Profile Modification Modal */}
       <AnimatePresence>
