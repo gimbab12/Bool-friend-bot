@@ -1017,7 +1017,7 @@ export default function App() {
         </AnimatePresence>
 
         {/* Chat Area */}
-        <div id="chat-section" className="w-full md:w-[420px] h-[100dvh] md:h-full bg-slate-800 rounded-none md:rounded-3xl shadow-2xl border-0 md:border border-slate-700 overflow-hidden flex flex-col justify-between relative shrink-0">
+        <div id="chat-section" className="w-full md:w-[560px] h-[100dvh] md:h-full bg-slate-800 rounded-none md:rounded-3xl shadow-2xl border-0 md:border border-slate-700 overflow-hidden flex flex-col justify-between relative shrink-0">
           
           {/* Mobile Profile & Title Bar */}
           <div className="p-3 bg-slate-800 border-b border-slate-700/60 flex items-center justify-between md:hidden">
@@ -1281,33 +1281,6 @@ export default function App() {
               />
               {/* <!-- [여기서까지 카카오 애드핏 320x50 코드 입력] --> */}
             </div>
-          </div>
-        </div>
-
-        {/* PC 160x600 Skyscraper Banner adjacent to the centered chat window */}
-        <div className="hidden md:flex flex-col gap-3 shrink-0 w-[190px] bg-slate-800/90 border border-slate-700/80 rounded-3xl p-3 items-center justify-center h-full min-h-[640px] shadow-2xl self-center">
-          <div className="flex items-center justify-between w-full px-1 border-b border-slate-700/60 pb-2 mb-1">
-            <span className="bg-yellow-500 text-slate-950 text-[10px] px-1.5 py-0.5 rounded font-extrabold uppercase tracking-wide animate-pulse">
-              AD
-            </span>
-            <span className="text-[10px] font-semibold text-slate-300">애드핏 160x600</span>
-          </div>
-          <div className="flex-1 flex items-center justify-center w-full">
-            <div className="w-[160px] h-[600px] overflow-hidden flex items-center justify-center bg-slate-950/40 rounded-2xl p-1 border border-slate-800/40">
-              {/* <!-- [여기서부터 카카오 애드핏 160x600 코드 입력] --> */}
-              {/* @ts-ignore */}
-              <ins 
-                className="kakao_ad_area" 
-                style={{ display: "none" }}
-                data-ad-width="160"
-                data-ad-height="600"
-                data-ad-unit="DAN-5UCnpbBXuqIrbf2q"
-              />
-              {/* <!-- [여기서까지 카카오 애드핏 160x600 코드 입력] --> */}
-            </div>
-          </div>
-          <div className="text-[10px] text-slate-500 text-center select-none pt-2 border-t border-slate-700/40 w-full">
-            ADVERTISEMENT
           </div>
         </div>
       </div>
