@@ -15,9 +15,9 @@ let ai: GoogleGenAI | null = null;
 let currentApiKey: string | undefined = undefined;
 
 function getGenAI(): GoogleGenAI {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY_2;
   if (!apiKey) {
-    throw new Error("GEMINI_API_KEY is not defined in your environment variables. Please configure it in Settings > Secrets.");
+    throw new Error("GEMINI_API_KEY or GEMINI_API_KEY_2 is not defined in your environment variables. Please configure it in Settings > Secrets.");
   }
   
   if (!ai || currentApiKey !== apiKey) {
