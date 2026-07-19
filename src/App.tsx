@@ -16,7 +16,9 @@ import {
   MessageCircle,
   Languages,
   Globe,
-  ChevronDown
+  ChevronDown,
+  Share2,
+  Download
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -645,13 +647,62 @@ export default function App() {
     };
   }, []);
 
-  const handleInstallClick = async () => {
-    if (!installPrompt) return;
-    installPrompt.prompt();
-    const { outcome } = await installPrompt.userChoice;
-    console.log(`PWA Install Choice Outcome: ${outcome}`);
-    setInstallPrompt(null);
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: "불알친구 AI",
+        text: "같이 뇌피셜 헛소리 할 사람?",
+        url: window.location.href,
+      }).catch(console.error);
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert("링크가 복사되었습니다!");
+    }
   };
+
+  const handleInstall = () => {
+    if (installPrompt) {
+      installPrompt.prompt();
+      installPrompt.userChoice.then((choiceResult: any) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the A2HS prompt');
+        }
+        setInstallPrompt(null);
+      });
+    } else if (isIOS) {
+      alert("Safari의 공유 버튼을 누르고 [홈 화면에 추가]를 선택하세요!");
+    }
+  };
+
+  const SidebarButtons = () => (
+    <div className="flex gap-2 w-full mt-4 border-t border-slate-700/60 pt-4">
+      <button 
+        onClick={handleShare}
+        className="flex-1 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5"
+      >
+        <Share2 className="w-3.5 h-3.5" />
+        공유
+      </button>
+      <button 
+        onClick={handleInstall}
+        className="flex-1 py-2 bg-yellow-500 hover:bg-yellow-400 text-slate-950 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5"
+      >
+        <Download className="w-3.5 h-3.5" />
+        홈화면 추가
+      </button>
+    </div>
+  );
+
+  const MiniActionButtons = () => (
+    <div className="flex gap-1.5">
+      <button onClick={handleShare} className="p-2 bg-slate-700 hover:bg-slate-650 rounded-xl transition text-slate-300" title="공유">
+        <Share2 className="w-4 h-4" />
+      </button>
+      <button onClick={handleInstall} className="p-2 bg-slate-700 hover:bg-slate-650 rounded-xl transition text-slate-300" title="홈화면 추가">
+        <Download className="w-4 h-4" />
+      </button>
+    </div>
+  );
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -911,6 +962,12 @@ export default function App() {
                 "{friendBio}"
               </div>
 
+              {/* Quick Actions */}
+              <div className="mt-4 flex items-center justify-between">
+                <span className="text-xs text-slate-400 font-medium">빠른 설정</span>
+                <MiniActionButtons />
+              </div>
+
               {/* Profile Config Button */}
               <div className="mt-4 flex flex-col gap-2">
                 <div className="flex gap-2">
@@ -929,14 +986,17 @@ export default function App() {
                     <RotateCcw className="w-3.5 h-3.5" />
                   </button>
                 </div>
-                <button 
-                  onClick={() => setShowUserProfileModal(true)}
-                  className="w-full py-1.5 px-3 bg-slate-800 border border-slate-600 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl text-xs font-medium transition flex items-center justify-center gap-1.5 relative"
-                >
-                  <span className="text-sm">{userAvatar}</span>
-                  <span>{t.userModalTitle}</span>
-                  <span className="bg-yellow-500/20 text-yellow-400 text-[9px] font-bold px-1.5 py-0.5 rounded shrink-0">나</span>
-                </button>
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => setShowUserProfileModal(true)}
+                    className="flex-1 py-1.5 px-3 bg-slate-800 border border-slate-600 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl text-xs font-medium transition flex items-center justify-center gap-1.5 relative"
+                  >
+                    <span className="text-sm">{userAvatar}</span>
+                    <span>{t.userModalTitle}</span>
+                    <span className="bg-yellow-500/20 text-yellow-400 text-[9px] font-bold px-1.5 py-0.5 rounded shrink-0">나</span>
+                  </button>
+                  <MiniActionButtons />
+                </div>
               </div>
             </div>
 
@@ -982,21 +1042,24 @@ export default function App() {
           </div>
 
           {/* Desktop Footer utilities */}
-          <div className="hidden md:flex items-center justify-between pt-4 border-t border-slate-700/40 text-[11px] text-slate-400">
-            <button 
-              onClick={copyToClipboard}
-              className="flex items-center gap-1 hover:text-slate-200 transition"
-            >
-              {isCopied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
-              {t.backupBtn}
-            </button>
-            <button 
-              onClick={clearChat}
-              className="flex items-center gap-1 hover:text-red-400 transition"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-              {t.resetBtn}
-            </button>
+          <div className="flex flex-col gap-2 pt-4 border-t border-slate-700/40">
+            <div className="flex items-center justify-between text-[11px] text-slate-400">
+              <button 
+                onClick={copyToClipboard}
+                className="flex items-center gap-1 hover:text-slate-200 transition"
+              >
+                {isCopied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+                {t.backupBtn}
+              </button>
+              <button 
+                onClick={clearChat}
+                className="flex items-center gap-1 hover:text-red-400 transition"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                {t.resetBtn}
+              </button>
+            </div>
+            <SidebarButtons />
           </div>
         </div>
 
@@ -1141,6 +1204,23 @@ export default function App() {
             </div>
           )}
 
+          {/* Mobile Sticky 320x50 AdFit Banner Space */}
+          <div className="md:hidden w-full flex flex-col items-center justify-center bg-slate-950/60 border-b border-slate-800/50 py-1 shrink-0">
+            <span className="text-[8px] text-slate-500 mb-0.5 uppercase tracking-wide">ADVERTISEMENT</span>
+            <div className="w-[320px] h-[50px] overflow-hidden flex items-center justify-center">
+              {/* <!-- [여기서부터 카카오 애드핏 320x50 코드 입력] --> */}
+              {/* @ts-ignore */}
+              <ins 
+                className="kakao_ad_area" 
+                style={{ display: "none" }}
+                data-ad-width="320"
+                data-ad-height="50"
+                data-ad-unit="DAN-GotOsRBzbpfKdqVx"
+              />
+              {/* <!-- [여기서까지 카카오 애드핏 320x50 코드 입력] --> */}
+            </div>
+          </div>
+
           {/* Chat Bubble Scroll Area */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.map((msg) => {
@@ -1280,22 +1360,6 @@ export default function App() {
             </button>
           </form>
 
-          {/* Mobile Sticky 320x50 AdFit Banner Space */}
-          <div className="md:hidden w-full flex flex-col items-center justify-center bg-slate-950/60 border-t border-slate-800/50 py-1 shrink-0">
-            <span className="text-[8px] text-slate-500 mb-0.5 uppercase tracking-wide">ADVERTISEMENT</span>
-            <div className="w-[320px] h-[50px] overflow-hidden flex items-center justify-center">
-              {/* <!-- [여기서부터 카카오 애드핏 320x50 코드 입력] --> */}
-              {/* @ts-ignore */}
-              <ins 
-                className="kakao_ad_area" 
-                style={{ display: "none" }}
-                data-ad-width="320"
-                data-ad-height="50"
-                data-ad-unit="DAN-GotOsRBzbpfKdqVx"
-              />
-              {/* <!-- [여기서까지 카카오 애드핏 320x50 코드 입력] --> */}
-            </div>
-          </div>
         </div>
       </div>
 
@@ -1309,12 +1373,15 @@ export default function App() {
               exit={{ scale: 0.95, opacity: 0 }}
               className="bg-slate-800 border border-slate-700 rounded-3xl p-6 w-full max-w-sm shadow-2xl space-y-4"
             >
-              <div className="flex items-center gap-2 pb-2 border-b border-slate-700">
-                <Smile className="w-5 h-5 text-yellow-400" />
-                <h3 className="font-bold text-lg text-slate-100">{t.modalTitle}</h3>
+              <div className="flex items-center justify-between pb-2 border-b border-slate-700">
+                <div className="flex items-center gap-2">
+                  <Smile className="w-5 h-5 text-yellow-400" />
+                  <h3 className="font-bold text-lg text-slate-100">{t.modalTitle}</h3>
+                </div>
+                <MiniActionButtons />
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-3 h-[60vh] overflow-y-auto pr-2 pb-2">
                 <div>
                   <label className="block text-xs font-semibold text-slate-400 mb-1">{t.modalNameLabel}</label>
                   <input 
