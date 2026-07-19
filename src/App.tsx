@@ -606,6 +606,7 @@ export default function App() {
   const [isCopied, setIsCopied] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [showResetConfirmModal, setShowResetConfirmModal] = useState(false);
 
   // PWA A2HS (Add to Home Screen) States
   const [installPrompt, setInstallPrompt] = useState<any>(null);
@@ -728,7 +729,12 @@ export default function App() {
       });
 
       if (!res.ok) {
-        throw new Error(t.errorMessage);
+        let serverErrorMsg = "";
+        try {
+          const errData = await res.json();
+          serverErrorMsg = errData.error || "";
+        } catch (e) {}
+        throw new Error(serverErrorMsg || t.errorMessage);
       }
 
       const data = await res.json();
@@ -747,10 +753,15 @@ export default function App() {
       setMessages((prev) => [...prev, modelMsg]);
     } catch (err: any) {
       console.error(err);
+      const isCustomError = err.message && err.message !== t.errorMessage && err.message !== "Failed to fetch";
+      const actualErrorText = isCustomError
+        ? `${t.errorMessage}\n\n⚠️ (시스템 오류 원인: ${err.message})`
+        : t.errorMessage;
+
       const errMsg: Message = {
         id: `err-${Date.now()}`,
         role: "model",
-        content: t.errorMessage,
+        content: actualErrorText,
         timestamp: new Date().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" }),
       };
       setMessages((prev) => [...prev, errMsg]);
@@ -765,16 +776,19 @@ export default function App() {
   };
 
   const clearChat = () => {
-    if (confirm(t.resetConfirm)) {
-      setMessages([
-        {
-          id: `welcome-${Date.now()}`,
-          role: "model",
-          content: t.resetWelcome,
-          timestamp: new Date().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" }),
-        },
-      ]);
-    }
+    setShowResetConfirmModal(true);
+  };
+
+  const handleConfirmReset = () => {
+    setMessages([
+      {
+        id: `welcome-${Date.now()}`,
+        role: "model",
+        content: t.resetWelcome,
+        timestamp: new Date().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" }),
+      },
+    ]);
+    setShowResetConfirmModal(false);
   };
 
   // Playful action: trigger a quick tease/annoyance response
@@ -1608,6 +1622,48 @@ export default function App() {
                   className="flex-1 py-2 bg-green-500 hover:bg-green-400 text-slate-950 rounded-xl text-xs font-bold transition"
                 >
                   {t.userModalSaveBtn}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Custom Reset Confirm Modal */}
+      <AnimatePresence>
+        {showResetConfirmModal && (
+          <div className="fixed inset-0 z-55 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-slate-800 border border-slate-700 rounded-3xl p-6 w-full max-w-sm shadow-2xl space-y-4 text-center"
+            >
+              <div className="mx-auto w-12 h-12 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-500">
+                <Trash2 className="w-6 h-6" />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="font-bold text-base text-slate-100">
+                  {lang === "ko" ? "대화 리셋" : "Reset Chat"}
+                </h3>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  {t.resetConfirm}
+                </p>
+              </div>
+
+              <div className="flex gap-2 pt-2">
+                <button 
+                  onClick={() => setShowResetConfirmModal(false)}
+                  className="flex-1 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl text-xs font-semibold transition"
+                >
+                  {lang === "ko" ? "취소" : "Cancel"}
+                </button>
+                <button 
+                  onClick={handleConfirmReset}
+                  className="flex-1 py-2.5 bg-red-500 hover:bg-red-400 text-white rounded-xl text-xs font-bold transition shadow-md shadow-red-500/10"
+                >
+                  {lang === "ko" ? "삭제" : "Delete"}
                 </button>
               </div>
             </motion.div>
