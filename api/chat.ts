@@ -1,15 +1,4 @@
-import express from "express";
-import path from "path";
-import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-const app = express();
-const PORT = 3000;
-
-app.use(express.json());
 
 let ai: GoogleGenAI | null = null;
 let currentApiKey: string | undefined = undefined;
@@ -17,7 +6,7 @@ let currentApiKey: string | undefined = undefined;
 function getGenAI(): GoogleGenAI {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    throw new Error("GEMINI_API_KEY is not defined in your environment variables. Please configure it in Settings > Secrets.");
+    throw new Error("GEMINI_API_KEY is not defined in your environment variables. Please configure it in your Vercel project Settings > Environment Variables.");
   }
   
   if (!ai || currentApiKey !== apiKey) {
@@ -30,7 +19,6 @@ function getGenAI(): GoogleGenAI {
         },
       },
     });
-    console.log("[Gemini API] New GoogleGenAI client initialized with updated API key.");
   }
   return ai;
 }
@@ -73,7 +61,6 @@ const SYSTEM_INSTRUCTIONS = {
 5. 用中文（简体）回答。`
 };
 
-// Helper function to handle fallback when a model is unavailable (e.g. 503 high demand or 429 quota)
 async function generateContentWithFallback(genAI: GoogleGenAI, params: { contents: any[]; config: any }) {
   const modelsToTry = ["gemini-3.5-flash", "gemini-flash-latest", "gemini-3.1-flash-lite"];
   let lastError: any = null;
@@ -96,8 +83,26 @@ async function generateContentWithFallback(genAI: GoogleGenAI, params: { content
   throw lastError || new Error("All fallback models failed to respond");
 }
 
-// API route for chat / custom ge-drip (개드립) generation
-app.post("/api/chat", async (req, res) => {
+export default async function handler(req: any, res: any) {
+  // CORS headers
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS,PATCH,DELETE,POST,PUT");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+  );
+
+  if (req.method === "OPTIONS") {
+    res.status(200).end();
+    return;
+  }
+
+  if (req.method !== "POST") {
+    res.status(405).json({ error: "Method not allowed" });
+    return;
+  }
+
   try {
     const { 
       message, 
@@ -314,32 +319,9 @@ app.post("/api/chat", async (req, res) => {
     });
 
     const reply = response.text || (lang === "ko" ? "아 씨발 뭔 일 생겼나 본데? 다시 말해봐 ㅋㅋㅋ" : "Error? Lmao try again bro");
-    res.json({ reply });
+    res.status(200).json({ reply });
   } catch (error: any) {
-    console.error("Gemini API Error:", error);
+    console.error("Gemini API Error (Vercel Serverless):", error);
     res.status(500).json({ error: error.message || "서버 터졌다 새끼야" });
   }
-});
-
-// Configure Vite or static files middleware
-async function setupServer() {
-  if (process.env.NODE_ENV !== "production") {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
-    app.get("*", (req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
-    });
-  }
-
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
 }
-
-setupServer();
