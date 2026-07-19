@@ -62,7 +62,7 @@ const SYSTEM_INSTRUCTIONS = {
 };
 
 async function generateContentWithFallback(genAI: GoogleGenAI, params: { contents: any[]; config: any }) {
-  const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-flash", "gemini-1.5-flash"];
+  const modelsToTry = ["gemini-3.1-flash-lite", "gemini-3.1-flash-lite", "gemini-3.1-flash-lite"];
   let lastError: any = null;
 
   for (const model of modelsToTry) {
